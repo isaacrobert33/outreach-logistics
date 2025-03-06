@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { signUp } from "./auth-actions";
+import { redirect } from "next/navigation";
 
 const signupSchema = z
   .object({
@@ -57,6 +58,8 @@ export function SignupForm() {
         name: data.name,
         email: data.email,
         password: data.password,
+      }).then(() => {
+        redirect("/dashboard");
       });
     } catch (error) {
       if (error instanceof Error) {

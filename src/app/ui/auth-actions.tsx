@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { hash } from "bcryptjs";
 import { signIn } from "next-auth/react";
 import AuthError from "next-auth";
@@ -48,9 +47,7 @@ export async function signUp(data: SignUpData) {
       password: data.password,
       redirect: false,
     });
-
     revalidatePath("/");
-    redirect("/dashboard");
   } catch (error) {
     if (error instanceof Error) {
       throw error;
@@ -72,7 +69,6 @@ export async function login(data: LoginData) {
     }
 
     revalidatePath("/");
-    redirect("/dashboard");
   } catch (error) {
     if (error instanceof AuthError) {
       throw new Error("Invalid email or password");
