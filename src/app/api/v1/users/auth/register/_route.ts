@@ -1,7 +1,8 @@
 import { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
-import { hashPassword, Response } from "@/lib/utils";
+import { Response } from "@/lib/utils";
+import { hash } from "bcrypt";
 
 // We hash the user entered password using crypto.js
 
@@ -16,7 +17,7 @@ export default async function POST(req: NextRequest) {
 
   try {
     const user = await prisma.user.create({
-      data: { ...body, password: hashPassword(body.password) },
+      data: { ...body, password: hash(body.password, 10) },
     });
     return Response({ data: user, status: 201 });
   } catch (e) {

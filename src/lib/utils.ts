@@ -1,15 +1,10 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { SHA256 as sha256 } from "crypto-js";
 import { NextResponse } from "next/server";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-export const hashPassword = (string: string) => {
-  return sha256(string).toString();
-};
 
 const ALL_SUCCESS_CODES: { [key: number]: string } = {
   200: "Fetched successfully",

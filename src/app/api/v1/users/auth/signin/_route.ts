@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextRequest } from "next/server";
-import { hashPassword, Response } from "@/lib/utils";
+import { Response } from "@/lib/utils";
+import { hash } from "bcrypt";
 
 function exclude(user: any, keys: string[]) {
   for (let key of keys) {
@@ -27,7 +28,9 @@ export default async function POST(req: NextRequest) {
       },
     });
 
-    if (user && user.password === hashPassword(password)) {
+    const hashed = await hash(password, 10);
+
+    if (user && user.password === hashed) {
       // exclude password from json response
       return Response({ status: 200, data: exclude(user, ["password"]) });
     } else {
