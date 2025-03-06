@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { hash } from "bcrypt";
+import { hash } from "bcryptjs";
 import { signIn } from "next-auth/react";
 import AuthError from "next-auth";
 import prisma from "@/lib/prisma";

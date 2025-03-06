@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { Response } from "@/lib/utils";
-import { hash } from "bcrypt";
+import { hash } from "bcryptjs";
 
 // We hash the user entered password using crypto.js
 
