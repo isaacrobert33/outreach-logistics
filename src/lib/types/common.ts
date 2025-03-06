@@ -1,5 +1,5 @@
-import { PaymentSchema } from "@/app/api/v1/payments/route";
 import { z } from "zod";
+import { PaymentSchema } from "../schema";
 
 export interface ResponseProps {
   status: number;

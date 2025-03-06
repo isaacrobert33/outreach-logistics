@@ -20,12 +20,12 @@ import {
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { PaymentSchema } from "../api/v1/payments/route";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 import { PaymentType } from "@/lib/types/common";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { PaymentSchema } from "@/lib/schema";
 
 export const CreatePaymentForm = ({
   open,
