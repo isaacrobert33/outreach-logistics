@@ -20,7 +20,7 @@ import { SignupForm } from "./ui/signup-form";
 export default function Auth() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { status, data } = useSession();
+  const { status } = useSession();
   const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
   const [isLoading, setIsLoading] = useState<{
     google: boolean;
