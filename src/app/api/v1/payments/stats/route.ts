@@ -1,8 +1,7 @@
 import prisma from "@/lib/prisma";
 import { Response } from "@/lib/utils";
-import { NextApiRequest } from "next";
 
-export const GET = async (req: NextApiRequest) => {
+export const GET = async () => {
   const totalPaidPayment = await prisma.payment.count({
     where: { paymentStatus: "PAID" },
   });
