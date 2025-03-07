@@ -402,6 +402,7 @@ export default function Dashboard() {
           onClose={() => {
             setIsUpdateDialogOpen(false);
             refetch();
+            statsQuery.refetch();
           }}
           payment={selectedPayment}
         />
@@ -414,6 +415,7 @@ export default function Dashboard() {
           onClose={() => {
             setIsNewDialogOpen(false);
             refetch();
+            statsQuery.refetch();
           }}
         />
       )}

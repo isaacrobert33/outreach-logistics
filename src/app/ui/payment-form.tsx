@@ -203,7 +203,10 @@ export const CreatePaymentForm = ({
             <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button onClick={handleSubmit(onSubmit)}>
+            <Button
+              onClick={handleSubmit(onSubmit)}
+              disabled={createMutation.isPending}
+            >
               {createMutation.isPending ? "Creating..." : "Create Payment"}
             </Button>
           </DialogFooter>
@@ -399,7 +402,10 @@ export const UpdatePaymentForm = ({
             <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button onClick={handleSubmit(onSubmit)}>
+            <Button
+              onClick={handleSubmit(onSubmit)}
+              disabled={updateMutation.isPending}
+            >
               {updateMutation.isPending ? "Saving..." : "Save Changes"}
             </Button>
           </DialogFooter>
