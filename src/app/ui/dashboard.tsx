@@ -68,74 +68,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// Sample payment data
-// const initialPayments = [
-//   {
-//     id: "PAY-001",
-//     recipient: "John Doe",
-//     amount: 1250.0,
-//     date: "2023-05-15",
-//     status: "completed",
-//     email: "john.doe@example.com",
-//   },
-//   {
-//     id: "PAY-002",
-//     recipient: "Jane Smith",
-//     amount: 850.75,
-//     date: "2023-05-16",
-//     status: "pending",
-//     email: "jane.smith@example.com",
-//   },
-//   {
-//     id: "PAY-003",
-//     recipient: "Robert Johnson",
-//     amount: 2340.5,
-//     date: "2023-05-14",
-//     status: "failed",
-//     email: "robert.j@example.com",
-//   },
-//   {
-//     id: "PAY-004",
-//     recipient: "Emily Davis",
-//     amount: 1100.25,
-//     date: "2023-05-13",
-//     status: "completed",
-//     email: "emily.davis@example.com",
-//   },
-//   {
-//     id: "PAY-005",
-//     recipient: "Michael Wilson",
-//     amount: 750.0,
-//     date: "2023-05-12",
-//     status: "pending",
-//     email: "michael.w@example.com",
-//   },
-//   {
-//     id: "PAY-006",
-//     recipient: "Sarah Brown",
-//     amount: 3200.0,
-//     date: "2023-05-11",
-//     status: "completed",
-//     email: "sarah.b@example.com",
-//   },
-//   {
-//     id: "PAY-007",
-//     recipient: "David Miller",
-//     amount: 920.5,
-//     date: "2023-05-10",
-//     status: "failed",
-//     email: "david.m@example.com",
-//   },
-//   {
-//     id: "PAY-008",
-//     recipient: "Lisa Anderson",
-//     amount: 1500.75,
-//     date: "2023-05-09",
-//     status: "completed",
-//     email: "lisa.a@example.com",
-//   },
-// ];
-
 export default function Dashboard() {
   const session = useSession();
   const router = useRouter();
@@ -155,6 +87,15 @@ export default function Dashboard() {
       return response.json();
     },
   });
+  const statsQuery = useQuery({
+    queryKey: ["stats"],
+    queryFn: async () => {
+      const res = await fetch(`/api/v1/payments/stats`);
+      return res.json();
+    },
+  });
+
+  // const paymentStatsData = await paymentsStats();
 
   // Open update dialog with selected payment
   const openUpdateDialog = (payment: PaymentType) => {
@@ -297,7 +238,9 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">NGN 10000</div>
+                <div className="text-2xl font-bold">
+                  NGN{statsQuery?.data?.data?.totalPaidAmount}
+                </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   Across {data?.data?.length} transactions
                 </p>
@@ -311,10 +254,10 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-green-500">
-                  NGN12000.00
+                  NGN{statsQuery?.data?.data?.completedPaidAmount}
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {data?.data?.length} transactions
+                  {statsQuery?.data?.data?.totalPaid} payments
                 </p>
               </CardContent>
             </Card>
@@ -326,10 +269,10 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-yellow-500">
-                  NGN1600
+                  NGN{statsQuery?.data?.data?.pendingPaidAmount}
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {data?.data?.length} transactions
+                  {statsQuery?.data?.data?.totalPending} payments
                 </p>
               </CardContent>
             </Card>
@@ -368,7 +311,9 @@ export default function Dashboard() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle>Payment Records</CardTitle>
-              <CardDescription>{data?.length} payments found</CardDescription>
+              <CardDescription>
+                {data?.data?.length} payments found
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">

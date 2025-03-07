@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { Response } from "@/lib/utils";
 
 export async function PATCH(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -7,7 +8,7 @@ export async function PATCH(req: NextRequest) {
   const { name, crew, email, paymentStatus, paidAmount } = await req.json();
 
   if (!id) {
-    return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+    return Response({ message: "Invalid ID", status: 400 });
   }
 
   try {
@@ -22,7 +23,29 @@ export async function PATCH(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(updatedPayment, { status: 200 });
+    return Response({ data: updatedPayment, status: 200 });
+  } catch (error: any) {
+    return Response({
+      message: `Internal server error. ${error.message}`,
+      status: 500,
+    });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return Response({ message: "Invalid ID", status: 400 });
+  }
+
+  try {
+    await prisma.payment.delete({
+      where: { id: id },
+    });
+
+    return Response({ status: 204 });
   } catch (error: any) {
     return NextResponse.json(
       { message: "Internal server error", error: error.message },
