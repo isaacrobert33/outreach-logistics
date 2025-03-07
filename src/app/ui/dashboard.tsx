@@ -10,16 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -46,13 +37,11 @@ import {
   Pencil,
   PlusIcon,
   Search,
-  Settings,
-  Users,
+  Trash2,
 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { PaymentType } from "@/lib/types/common";
 import { PaymentStatus } from "@prisma/client";
-import { set, z } from "zod";
 import { toast } from "sonner";
 import { CreatePaymentForm, UpdatePaymentForm } from "./payment-form";
 import { signOut, useSession } from "next-auth/react";
@@ -87,6 +76,14 @@ export default function Dashboard() {
       return response.json();
     },
   });
+
+  const profileQuery = useQuery({
+    queryKey: ["profile", session],
+    queryFn: async () => {
+      const res = await fetch(`/api/v1/users/${session?.data?.user?.email}`);
+      return res.json();
+    },
+  });
   const statsQuery = useQuery({
     queryKey: ["stats"],
     queryFn: async () => {
@@ -94,8 +91,19 @@ export default function Dashboard() {
       return res.json();
     },
   });
-
-  // const paymentStatsData = await paymentsStats();
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/v1/payments/update?id=${id}`, {
+        method: "DELETE",
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      toast("Success", { description: "Payment record deleted succesfully." });
+      refetch();
+      statsQuery.refetch();
+    },
+  });
 
   // Open update dialog with selected payment
   const openUpdateDialog = (payment: PaymentType) => {
@@ -105,6 +113,14 @@ export default function Dashboard() {
 
   const openCreateDialog = () => {
     setIsNewDialogOpen(true);
+  };
+
+  const handleDelete = (id: string) => {
+    const confirm = window.confirm(
+      `Are you sure you want to delete this record?`
+    );
+    if (!confirm) return;
+    deleteMutation.mutate(id);
   };
 
   const getStatusBadge = (status: PaymentStatus) => {
@@ -130,6 +146,15 @@ export default function Dashboard() {
       router.push(`/`);
     }
   }, [session]);
+
+  useEffect(() => {
+    if (profileQuery.isError) {
+      toast("Error", {
+        description: "Oops, you don't have access to this resources.",
+      });
+      handleSignOut();
+    }
+  }, [profileQuery.isError]);
 
   return (
     <div className="flex min-h-screen">
@@ -382,6 +407,14 @@ export default function Dashboard() {
                             >
                               <Pencil className="h-4 w-4" />
                               <span className="sr-only">Edit</span>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDelete(payment.id)}
+                            >
+                              <Trash2 className="h-4 w-4 text-red-500" />
+                              <span className="sr-only">Delete</span>
                             </Button>
                           </TableCell>
                         </TableRow>

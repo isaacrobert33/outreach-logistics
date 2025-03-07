@@ -36,3 +36,10 @@ model Payment {
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   @@map(name: "payments")
 }
+
+model BankDetail {
+  id            String       @default(cuid()) @id
+  name          String
+  bank          String
+  acctNo        String?      @unique
+}
