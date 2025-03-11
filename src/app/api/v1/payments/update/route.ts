@@ -13,7 +13,7 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const updatedPayment = await prisma.payment.update({
-      where: { id: id },
+      where: { id },
       data: {
         name,
         crew,

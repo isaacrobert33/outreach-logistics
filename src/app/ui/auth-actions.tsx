@@ -33,19 +33,12 @@ export async function signUp(data: SignUpData) {
     const hashedPassword = await hash(data.password, 10);
 
     // Create the user
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         name: data.name,
         email: data.email,
         password: hashedPassword,
       },
-    });
-
-    // Sign in the user after successful registration
-    await signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      redirect: false,
     });
     revalidatePath("/");
   } catch (error) {

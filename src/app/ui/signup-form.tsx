@@ -11,6 +11,7 @@ import { AlertCircle, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { signUp } from "./auth-actions";
 import { redirect } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 const signupSchema = z
   .object({
@@ -58,7 +59,13 @@ export function SignupForm() {
         name: data.name,
         email: data.email,
         password: data.password,
-      }).then(() => {
+      }).then(async () => {
+        // Sign in the user after successful registration
+        await signIn("credentials", {
+          email: data.email,
+          password: data.password,
+          redirect: false,
+        });
         redirect("/dashboard");
       });
     } catch (error) {

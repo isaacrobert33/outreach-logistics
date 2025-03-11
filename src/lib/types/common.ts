@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PaymentSchema } from "../schema";
+import { PaymentSchema, BankSchema, OutreachSchema } from "../schema";
 
 export interface ResponseProps {
   status: number;
@@ -9,6 +9,15 @@ export interface ResponseProps {
 }
 
 export interface PaymentType extends z.infer<typeof PaymentSchema> {
+  id: string;
+  createdAt?: string;
+}
+
+export interface BankType extends z.infer<typeof BankSchema> {
+  id: string;
+  createdAt?: string;
+}
+export interface OutreachType extends z.infer<typeof OutreachSchema> {
   id: string;
   createdAt?: string;
 }

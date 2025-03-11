@@ -6,16 +6,17 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  url      = env("POSTGRES_PRISMA_URL") // uses connection pooling
 }
 
 model User {
-  id            String       @default(cuid()) @id
-  name          String?
-  email         String?   @unique
-  password      String?
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?  @unique
+  password  String?
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
   @@map(name: "users")
 }
 
@@ -25,21 +26,37 @@ enum PaymentStatus {
   PAID
 }
 
+model Outreach {
+  id          String    @id @default(cuid())
+  theme       String
+  description String?
+  createdAt   DateTime  @default(now()) @map(name: "created_at")
+  updatedAt   DateTime  @updatedAt @map(name: "updated_at")
+  Payment     Payment[]
+  BankDetail  BankDetail[]
+}
+
 model Payment {
-  id            String       @default(cuid()) @id
+  id            String        @id @default(cuid())
   name          String?
-  paymentStatus PaymentStatus    @default(NOT_PAID)
-  crew          String?   @default("nocrew")
-  email         String?   @unique
-  paidAmount    Float?   @default(0.0)
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  paymentStatus PaymentStatus @default(NOT_PAID)
+  crew          String?       @default("nocrew")
+  email         String?       @unique
+  paidAmount    Float?        @default(0.0)
+  outreachId    String?
+  outreach      Outreach?     @relation(fields: [outreachId], references: [id])
+  createdAt     DateTime      @default(now()) @map(name: "created_at")
+  updatedAt     DateTime      @updatedAt @map(name: "updated_at")
+
   @@map(name: "payments")
 }
 
 model BankDetail {
-  id            String       @default(cuid()) @id
-  name          String
-  bank          String
-  acctNo        String?      @unique
+  id     String  @id @default(cuid())
+  name   String
+  bank   String
+  isPublic   Boolean?   @default(true)
+  outreachId    String?
+  outreach      Outreach?     @relation(fields: [outreachId], references: [id])
+  acctNo String? @unique
 }

@@ -8,17 +8,14 @@ export const PATCH = async (
 ) => {
   const { id } = await params;
 
-  const { name, bank, acctNo, outreachId, isPublic } = await req.json();
-  const outreach = await prisma.bankDetail.update({
+  const { theme, description } = await req.json();
+  const outreach = await prisma.outreach.update({
     where: {
       id,
     },
     data: {
-      name,
-      bank,
-      acctNo,
-      outreachId,
-      isPublic,
+      theme,
+      description,
     },
   });
   return Response({ status: 201, data: outreach });
@@ -35,14 +32,14 @@ export async function DELETE(
   }
 
   try {
-    await prisma.bankDetail.delete({
+    await prisma.outreach.delete({
       where: { id: id },
     });
 
     return Response({ status: 204 });
   } catch (error: any) {
     return Response({
-      message: `Internal server error. ${error.message}`,
+      message: `Internal server error ${error.message}`,
       status: 500,
     });
   }

@@ -47,6 +47,7 @@ export const POST = async (req: NextRequest) => {
       data: {
         ...validatedBody,
         id: await generatePaymentId(validatedBody.crew),
+        outreachId: validatedBody.outreachId,
       },
     });
 

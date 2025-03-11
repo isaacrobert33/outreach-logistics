@@ -12,4 +12,18 @@ export const PaymentSchema = z.object({
     .or(z.string().transform((arg) => parseFloat(arg)))
     .optional(),
   createdAt: z.string().optional(),
+  outreachId: z.string().optional(), // Add outreachId here
+});
+
+export const BankSchema = z.object({
+  name: z.string(),
+  acctNo: z.string(),
+  bank: z.string(),
+  outreachId: z.string().nullable(),
+  isPublic: z.boolean(),
+});
+
+export const OutreachSchema = z.object({
+  theme: z.string(),
+  description: z.string().optional(),
 });
