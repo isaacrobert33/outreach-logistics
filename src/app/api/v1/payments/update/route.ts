@@ -5,7 +5,16 @@ import { Response } from "@/lib/utils";
 export async function PATCH(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
-  const { name, crew, email, paymentStatus, paidAmount } = await req.json();
+  const {
+    name,
+    crew,
+    email,
+    phone,
+    paymentStatus,
+    outreachId,
+    bankId,
+    paidAmount,
+  } = await req.json();
 
   if (!id) {
     return Response({ message: "Invalid ID", status: 400 });
@@ -18,7 +27,10 @@ export async function PATCH(req: NextRequest) {
         name,
         crew,
         email,
+        phone,
         paymentStatus,
+        outreachId,
+        bankId,
         paidAmount,
       },
     });

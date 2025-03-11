@@ -36,21 +36,6 @@ model Outreach {
   BankDetail  BankDetail[]
 }
 
-model Payment {
-  id            String        @id @default(cuid())
-  name          String?
-  paymentStatus PaymentStatus @default(NOT_PAID)
-  crew          String?       @default("nocrew")
-  email         String?       @unique
-  paidAmount    Float?        @default(0.0)
-  outreachId    String?
-  outreach      Outreach?     @relation(fields: [outreachId], references: [id])
-  createdAt     DateTime      @default(now()) @map(name: "created_at")
-  updatedAt     DateTime      @updatedAt @map(name: "updated_at")
-
-  @@map(name: "payments")
-}
-
 model BankDetail {
   id     String  @id @default(cuid())
   name   String
@@ -59,4 +44,23 @@ model BankDetail {
   outreachId    String?
   outreach      Outreach?     @relation(fields: [outreachId], references: [id])
   acctNo String? @unique
+  Payment     Payment[]
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  name          String?
+  paymentStatus PaymentStatus @default(NOT_PAID)
+  crew          String?       @default("nocrew")
+  email         String?       @unique
+  phone         String?       
+  paidAmount    Float?        @default(0.0)
+  outreachId    String?
+  outreach      Outreach?     @relation(fields: [outreachId], references: [id])
+  bankId        String?
+  bank          BankDetail?     @relation(fields: [bankId], references: [id])
+  createdAt     DateTime      @default(now()) @map(name: "created_at")
+  updatedAt     DateTime      @updatedAt @map(name: "updated_at")
+
+  @@map(name: "payments")
 }

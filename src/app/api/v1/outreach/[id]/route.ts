@@ -2,6 +2,20 @@ import prisma from "@/lib/prisma";
 import { Response } from "@/lib/utils";
 import { NextRequest } from "next/server";
 
+export const GET = async (
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) => {
+  const { id } = await params;
+
+  const outreach = await prisma.outreach.findFirst({
+    where: {
+      id,
+    },
+  });
+  return Response({ status: 200, data: outreach });
+};
+
 export const PATCH = async (
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -18,7 +32,7 @@ export const PATCH = async (
       description,
     },
   });
-  return Response({ status: 201, data: outreach });
+  return Response({ status: 202, data: outreach });
 };
 
 export async function DELETE(

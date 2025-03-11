@@ -36,7 +36,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { PaymentType } from "@/lib/types/common";
+import { BankType, OutreachType, PaymentType } from "@/lib/types/common";
 import { PaymentStatus } from "@prisma/client";
 import { toast } from "sonner";
 import { CreatePaymentForm, UpdatePaymentForm } from "./payment-form";
@@ -49,17 +49,43 @@ export default function Dashboard() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("*");
+  const [outreachFilter, setOutreachFilter] = useState("*");
+  const [bankFilter, setBankFilter] = useState("*");
   const [selectedPayment, setSelectedPayment] = useState<PaymentType | null>(
     null
   );
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
   const { data, refetch } = useQuery({
-    queryKey: ["payments", statusFilter, searchQuery],
+    queryKey: [
+      "payments",
+      statusFilter,
+      searchQuery,
+      bankFilter,
+      outreachFilter,
+    ],
     queryFn: async () => {
       const response = await fetch(
-        `/api/v1/payments?q=${searchQuery || "*"}&status=${statusFilter ?? "*"}`
+        `/api/v1/payments?q=${searchQuery || "*"}&status=${
+          statusFilter ?? "*"
+        }&outreach=${outreachFilter || "*"}&bank=${bankFilter || "*"}`
       );
+      return response.json();
+    },
+  });
+
+  const outreachQ = useQuery({
+    queryKey: ["outreach"],
+    queryFn: async () => {
+      const response = await fetch(`/api/v1/outreach`);
+      return response.json();
+    },
+  });
+
+  const banksQ = useQuery({
+    queryKey: ["banks"],
+    queryFn: async () => {
+      const response = await fetch(`/api/v1/banks?isPublic=true`);
       return response.json();
     },
   });
@@ -67,10 +93,15 @@ export default function Dashboard() {
   const statsQuery = useQuery({
     queryKey: ["stats"],
     queryFn: async () => {
-      const res = await fetch(`/api/v1/payments/stats`);
+      const res = await fetch(
+        `/api/v1/payments/stats?q=${searchQuery || "*"}&outreach=${
+          outreachFilter || "*"
+        }`
+      );
       return res.json();
     },
   });
+
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const res = await fetch(`/api/v1/payments/update?id=${id}`, {
@@ -131,10 +162,24 @@ export default function Dashboard() {
           <span>Outreach</span>
         </h1>
         <div className="flex items-center ml-auto">
-          <Button variant="outline" size="lg" className="mr-2">
-            <Download className="h-4 w-4 sm:mr-2" />
-            <span className="hidden sm:inline">Export</span>
-          </Button>
+          {!!data?.data?.length && (
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="mr-2 disabled:bg-gray-800"
+            >
+              <a
+                href={`/api/v1/payments/excel?q=${searchQuery || "*"}&status=${
+                  statusFilter ?? "*"
+                }&outreach=${outreachFilter || "*"}`}
+                download={"outreach-payments.xlsx"}
+              >
+                <Download className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Export</span>
+              </a>
+            </Button>
+          )}
           <Button
             size="lg"
             onClick={openCreateDialog}
@@ -153,7 +198,7 @@ export default function Dashboard() {
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-2">Payment Records</h2>
           <p className="text-gray-500 dark:text-gray-400">
-            Manage and track all payment transactions
+            Manage and track all payments
           </p>
         </div>
 
@@ -170,7 +215,7 @@ export default function Dashboard() {
                 NGN{statsQuery?.data?.data?.totalPaidAmount}
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Across {data?.data?.length} transactions
+                Across {data?.data?.length} payment(s)
               </p>
             </CardContent>
           </Card>
@@ -185,7 +230,7 @@ export default function Dashboard() {
                 NGN{statsQuery?.data?.data?.completedPaidAmount}
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                {statsQuery?.data?.data?.totalPaid} payments
+                Across {statsQuery?.data?.data?.totalPaid} payment(s)
               </p>
             </CardContent>
           </Card>
@@ -200,7 +245,7 @@ export default function Dashboard() {
                 NGN{statsQuery?.data?.data?.pendingPaidAmount}
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                {statsQuery?.data?.data?.totalPending} payments
+                Across {statsQuery?.data?.data?.totalPending} payment(s)
               </p>
             </CardContent>
           </Card>
@@ -220,6 +265,7 @@ export default function Dashboard() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
+              {/* Status filter */}
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-full md:w-[180px]">
                   <SelectValue placeholder="Filter by status" />
@@ -229,6 +275,38 @@ export default function Dashboard() {
                   <SelectItem value="PAID">Paid</SelectItem>
                   <SelectItem value="PENDING">Pending</SelectItem>
                   <SelectItem value="NOT_PAID">Not Paid</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Outreach filter */}
+              <Select value={outreachFilter} onValueChange={setOutreachFilter}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select outreach" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="*">All Outreaches</SelectItem>
+                  {outreachQ?.data?.data?.map(
+                    (item: OutreachType, index: number) => (
+                      <SelectItem key={index} value={item.id}>
+                        {item.theme}
+                      </SelectItem>
+                    )
+                  )}
+                </SelectContent>
+              </Select>
+
+              {/* Banks filter */}
+              <Select value={bankFilter} onValueChange={setBankFilter}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select outreach" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="*">All Banks</SelectItem>
+                  {banksQ?.data?.data?.map((item: BankType, index: number) => (
+                    <SelectItem key={index} value={item.id}>
+                      {item.name} - {item.bank}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -250,15 +328,18 @@ export default function Dashboard() {
                   <TableRow>
                     <TableHead className="w-[100px]">ID</TableHead>
                     <TableHead>Name</TableHead>
+                    <TableHead>Phone</TableHead>
                     <TableHead>Crew</TableHead>
                     <TableHead>
                       <div className="flex items-center">
                         Paid Amount
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                        {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
                       </div>
                     </TableHead>
                     <TableHead className="hidden md:table-cell">Date</TableHead>
+                    <TableHead>Payment Option</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Outreach</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -287,6 +368,9 @@ export default function Dashboard() {
                           </div>
                         </TableCell>
                         <TableCell className="capitalize">
+                          {payment.phone}
+                        </TableCell>
+                        <TableCell className="capitalize">
                           {payment.crew}
                         </TableCell>
                         <TableCell>
@@ -295,9 +379,13 @@ export default function Dashboard() {
                         <TableCell className="hidden md:table-cell">
                           {payment.createdAt}
                         </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {payment.bank}
+                        </TableCell>
                         <TableCell>
                           {getStatusBadge(payment.paymentStatus || "NOT_PAID")}
                         </TableCell>
+                        <TableCell>{payment.outreach}</TableCell>
                         <TableCell className="text-right">
                           <Button
                             variant="ghost"

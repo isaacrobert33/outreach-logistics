@@ -7,19 +7,21 @@ export const PaymentSchema = z.object({
   paymentStatus: PaymentStatus.optional(),
   crew: z.string().optional(),
   email: z.string().email().optional(),
+  phone: z.string().min(10).optional().nullable(),
   paidAmount: z
     .number()
     .or(z.string().transform((arg) => parseFloat(arg)))
     .optional(),
   createdAt: z.string().optional(),
-  outreachId: z.string().optional(), // Add outreachId here
+  outreachId: z.string().optional(),
+  bankId: z.string().optional(),
 });
 
 export const BankSchema = z.object({
   name: z.string(),
   acctNo: z.string(),
   bank: z.string(),
-  outreachId: z.string().nullable(),
+  outreachId: z.string().nullable().optional(),
   isPublic: z.boolean(),
 });
 

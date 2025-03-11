@@ -94,7 +94,7 @@ export default function Outreachs() {
       {/* Main Content */}
       <main className="flex-1 p-4 md:p-6 overflow-auto">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-2">Outreach Account(s)</h2>
+          <h2 className="text-2xl font-bold mb-2">Outreach Records(s)</h2>
           <p className="text-gray-500 dark:text-gray-400">
             Manage outreach records
           </p>
@@ -103,7 +103,7 @@ export default function Outreachs() {
         {/* Outreachs Table */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle>Outreach Records</CardTitle>
+            <CardTitle>Outreach Record(s)</CardTitle>
             <CardDescription>
               {data?.data?.length} outreach records found
             </CardDescription>

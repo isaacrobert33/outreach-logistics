@@ -7,6 +7,8 @@ export const GET = async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
   const query = searchParams.get("q") || "*";
   const status = searchParams.get("status") || "*";
+  const outreach = searchParams.get("outreach") || "*";
+  const bank = searchParams.get("bank") || "*";
 
   const filters: { [key: string]: any } = { OR: [] };
 
@@ -17,23 +19,40 @@ export const GET = async (req: NextRequest) => {
     delete filters["OR"];
   }
   if (status != "*") {
-    filters["paymentStatus"] = { contains: status };
+    filters["paymentStatus"] = { equals: status };
+  }
+
+  if (outreach != "*") {
+    filters["outreachId"] = { equals: outreach };
+  }
+
+  if (bank != "*") {
+    filters["bankId"] = { equals: bank };
   }
 
   const payments = await prisma.payment.findMany({
     where: filters,
     orderBy: { createdAt: "desc" },
+    include: {
+      outreach: true,
+      bank: true,
+    },
   });
+  const serializedPayments = payments.map((item) => ({
+    ...item,
+    outreach: item.outreach?.theme,
+    bank: item?.bank ? `${item.bank?.name} - ${item.bank.bank}` : "",
+  }));
   return Response({
     status: 200,
-    data: payments,
+    data: serializedPayments,
   });
 };
 
-const generatePaymentId = async (crew?: string) => {
+const generatePaymentId = async (outreachId?: string, crew?: string) => {
   crew = crew ?? "nocrew";
   const paymentCount = await prisma.payment.count({
-    where: { crew: crew },
+    where: { crew: crew, outreachId },
   });
   return `${crew.slice(0, 3).toUpperCase()}/${formatNumber(paymentCount + 1)}`;
 };
@@ -46,7 +65,10 @@ export const POST = async (req: NextRequest) => {
     const payment = await prisma.payment.create({
       data: {
         ...validatedBody,
-        id: await generatePaymentId(validatedBody.crew),
+        id: await generatePaymentId(
+          validatedBody.outreachId,
+          validatedBody.crew
+        ),
         outreachId: validatedBody.outreachId,
       },
     });

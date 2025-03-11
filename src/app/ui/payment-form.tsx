@@ -20,9 +20,9 @@ import {
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
-import { PaymentType } from "@/lib/types/common";
+import { BankType, OutreachType, PaymentType } from "@/lib/types/common";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { PaymentSchema } from "@/lib/schema";
@@ -41,6 +41,24 @@ export const CreatePaymentForm = ({
     control,
   } = useForm({
     resolver: zodResolver(PaymentSchema),
+    defaultValues: {
+      paidAmount: 0.0,
+    },
+  });
+  const outreachQ = useQuery({
+    queryKey: ["outreach"],
+    queryFn: async () => {
+      const response = await fetch(`/api/v1/outreach`);
+      return response.json();
+    },
+  });
+
+  const banksQ = useQuery({
+    queryKey: ["banks"],
+    queryFn: async () => {
+      const response = await fetch(`/api/v1/banks?isPublic=true`);
+      return response.json();
+    },
   });
   const createMutation = useMutation({
     mutationFn: (newPayment: any) =>
@@ -71,7 +89,7 @@ export const CreatePaymentForm = ({
               Enter the details for the new payment.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
+          <div className="flex flex-col gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="new-name" className="text-right">
                 Name
@@ -85,6 +103,23 @@ export const CreatePaymentForm = ({
                 {errors?.name && (
                   <p className="text-red-500 text-xs mt-1">
                     {errors?.name?.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="new-phone" className="text-right">
+                Phone
+              </Label>
+              <div className="col-span-3">
+                <Input
+                  id="new-phone"
+                  {...register("phone")}
+                  className={errors?.phone ? "border-red-500" : ""}
+                />
+                {errors.phone && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors?.phone?.message}
                   </p>
                 )}
               </div>
@@ -198,6 +233,61 @@ export const CreatePaymentForm = ({
                 )}
               />
             </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Outreach</Label>
+              <Controller
+                name="outreachId"
+                control={control}
+                rules={{ required: "Outreach is required" }}
+                render={({ field }) => (
+                  <Select
+                    value={field.value || ""}
+                    onValueChange={(value) => field.onChange(value)}
+                  >
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select outreach" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {outreachQ?.data?.data?.map(
+                        (item: OutreachType, index: number) => (
+                          <SelectItem key={index} value={item.id}>
+                            {item.theme}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Payment Option</Label>
+              <Controller
+                name="bankId"
+                control={control}
+                rules={{ required: "Payment option is required" }}
+                render={({ field }) => (
+                  <Select
+                    value={field.value || ""}
+                    onValueChange={(value) => field.onChange(value)}
+                  >
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select option" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {banksQ?.data?.data?.map(
+                        (item: BankType, index: number) => (
+                          <SelectItem key={index} value={item.id}>
+                            {item.name} - {item.bank}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={onClose}>
@@ -233,6 +323,23 @@ export const UpdatePaymentForm = ({
     reset,
   } = useForm({
     resolver: zodResolver(PaymentSchema),
+    defaultValues: {
+      paidAmount: 0.0,
+    },
+  });
+  const outreachQ = useQuery({
+    queryKey: ["outreach"],
+    queryFn: async () => {
+      const response = await fetch(`/api/v1/outreach`);
+      return response.json();
+    },
+  });
+  const banksQ = useQuery({
+    queryKey: ["banks"],
+    queryFn: async () => {
+      const response = await fetch(`/api/v1/banks?isPublic=true`);
+      return response.json();
+    },
   });
   const updateMutation = useMutation({
     mutationFn: (newPayment: any) =>
@@ -272,7 +379,7 @@ export const UpdatePaymentForm = ({
             </DialogDescription>
           </DialogHeader>
           {payment && (
-            <div className="grid gap-4 py-4">
+            <div className="flex flex-col gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="payment-id" className="text-right">
                   ID
@@ -297,6 +404,23 @@ export const UpdatePaymentForm = ({
                   {errors?.name && (
                     <p className="text-red-500 text-xs mt-1">
                       {errors?.name?.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="update-phone" className="text-right">
+                  Phone
+                </Label>
+                <div className="col-span-3">
+                  <Input
+                    id="update-phone"
+                    {...register("phone")}
+                    className={errors?.phone ? "border-red-500" : ""}
+                  />
+                  {errors.phone && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors?.phone?.message}
                     </p>
                   )}
                 </div>
@@ -391,6 +515,60 @@ export const UpdatePaymentForm = ({
                         <SelectItem value="PAID">Paid</SelectItem>
                         <SelectItem value="PENDING">Pending</SelectItem>
                         <SelectItem value="NOT_PAID">Not Paid</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Outreach</Label>
+                <Controller
+                  name="outreachId"
+                  control={control}
+                  rules={{ required: "Outreach is required" }}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value || ""}
+                      onValueChange={(value) => field.onChange(value)}
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Select outreach" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {outreachQ?.data?.data?.map(
+                          (item: OutreachType, index: number) => (
+                            <SelectItem key={index} value={item.id}>
+                              {item.theme}
+                            </SelectItem>
+                          )
+                        )}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Payment Option</Label>
+                <Controller
+                  name="bankId"
+                  control={control}
+                  rules={{ required: "Payment option is required" }}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value || ""}
+                      onValueChange={(value) => field.onChange(value)}
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Select option" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {banksQ?.data?.data?.map(
+                          (item: BankType, index: number) => (
+                            <SelectItem key={index} value={item.id}>
+                              {item.name} - {item.bank}
+                            </SelectItem>
+                          )
+                        )}
                       </SelectContent>
                     </Select>
                   )}

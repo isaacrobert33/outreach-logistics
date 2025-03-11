@@ -72,7 +72,7 @@ export default function Banks() {
     return status ? (
       <Badge className="bg-green-500">Public</Badge>
     ) : (
-      <Badge className="bg-red-500-">Not Public</Badge>
+      <Badge className="bg-amber-600">Not Public</Badge>
     );
   };
 
@@ -100,7 +100,7 @@ export default function Banks() {
       {/* Main Content */}
       <main className="flex-1 p-4 md:p-6 overflow-auto">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-2">Bank Accounts</h2>
+          <h2 className="text-2xl font-bold mb-2">Payment Options</h2>
           <p className="text-gray-500 dark:text-gray-400">
             Manage bank accounts
           </p>

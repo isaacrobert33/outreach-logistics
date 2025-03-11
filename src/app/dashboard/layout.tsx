@@ -82,11 +82,11 @@ const DashboardLayout = ({ children }: { children: any }) => {
             <li>
               <Link href={"/dashboard/banks"}>
                 <Button
-                  variant={pathname === "/dashboard/crews" ? "link" : "ghost"}
+                  variant={pathname === "/dashboard/banks" ? "link" : "ghost"}
                   className="w-full justify-start"
                 >
                   <BanknoteIcon className="mr-2 h-4 w-4" />
-                  Bank Accounts
+                  Payment Options
                 </Button>
               </Link>
             </li>
