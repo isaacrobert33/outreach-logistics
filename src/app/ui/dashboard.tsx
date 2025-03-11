@@ -28,12 +28,15 @@ import {
 } from "@/components/ui/table";
 import {
   ArrowUpDown,
+  CircleXIcon,
+  Cross,
   DollarSign,
   Download,
   Pencil,
   PlusIcon,
   Search,
   Trash2,
+  XIcon,
 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { BankType, OutreachType, PaymentType } from "@/lib/types/common";
@@ -264,7 +267,18 @@ export default function Dashboard() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
+                {searchQuery && (
+                  <Button
+                    variant={"outline"}
+                    size={"icon"}
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-2 top-1 rounded-full w-7 h-7"
+                  >
+                    <XIcon className="w-5 h-5" />
+                  </Button>
+                )}
               </div>
+
               {/* Status filter */}
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-full md:w-[180px]">
