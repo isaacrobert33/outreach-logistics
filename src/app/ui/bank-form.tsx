@@ -328,30 +328,47 @@ export const UpdateBankForm = ({
                 </div>
               </div>
 
-              <Controller
-                name="outreachId"
-                control={control}
-                rules={{ required: "Outreach is required" }}
-                render={({ field }) => (
-                  <Select
-                    value={field.value || ""}
-                    onValueChange={(value) => field.onChange(value)}
-                  >
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Select outreach" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {outreachQ?.data?.data?.map(
-                        (item: OutreachType, index: number) => (
-                          <SelectItem key={index} value={item.id}>
-                            {item.theme}
-                          </SelectItem>
-                        )
-                      )}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
+              <div className="grid grid-col-2 items-center gap-4">
+                <Controller
+                  name="isPublic"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="public-mode"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                      <Label htmlFor="public-mode">Public</Label>
+                    </div>
+                  )}
+                />
+
+                <Controller
+                  name="outreachId"
+                  control={control}
+                  rules={{ required: "Outreach is required" }}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value || ""}
+                      onValueChange={(value) => field.onChange(value)}
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Select outreach" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {outreachQ?.data?.data?.map(
+                          (item: OutreachType, index: number) => (
+                            <SelectItem key={index} value={item.id}>
+                              {item.theme}
+                            </SelectItem>
+                          )
+                        )}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
             </div>
           )}
           <DialogFooter>
