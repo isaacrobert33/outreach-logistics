@@ -13,6 +13,7 @@ export interface PaymentType extends z.infer<typeof PaymentSchema> {
   outreach?: string;
   createdAt?: string;
   bank?: string;
+  proof_image?: string;
 }
 
 export interface BankType extends z.infer<typeof BankSchema> {

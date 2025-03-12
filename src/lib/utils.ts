@@ -41,3 +41,22 @@ export const Response = (body: {
 
 export const formatNumber = (num: string | number) =>
   num.toString().padStart(3, "0");
+
+export function copyToClipboard(
+  text: string,
+  onSuccess?: () => void,
+  onError?: () => void
+) {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      if (onSuccess) {
+        onSuccess();
+      }
+    })
+    .catch((err) => {
+      if (onError) {
+        onError();
+      }
+    });
+}

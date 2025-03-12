@@ -18,14 +18,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import { motion, AnimatePresence } from "framer-motion";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { BankType, OutreachType, PaymentType } from "@/lib/types/common";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PaymentSchema } from "@/lib/schema";
+import FileUpload from "@/components/file-uploader";
+import axios, { AxiosResponse } from "axios";
+import { ExtFile } from "@files-ui/react";
+import CrewSelect from "@/components/crews-select";
+import { copyToClipboard } from "@/lib/utils";
+import { CopyIcon } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export const CreatePaymentForm = ({
   open,
@@ -161,52 +170,7 @@ export const CreatePaymentForm = ({
                 )}
               </div>
             </div>
-            {/* <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="new-date" className="text-right">
-                Date
-              </Label>
-              <div className="col-span-3">
-                <Input
-                  id="new-date"
-                  type="date"
-                  {...register("createdAt")}
-                  className={errors?.createdAt ? "border-red-500" : ""}
-                />
-                {errors.createdAt && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.createdAt?.message}
-                  </p>
-                )}
-              </div>
-            </div> */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="new-crew" className="text-right">
-                Crew
-              </Label>
-              <Controller
-                name="crew"
-                control={control}
-                defaultValue="nocrew"
-                rules={{ required: "Crew is required" }}
-                render={({ field }) => (
-                  <Select
-                    value={field.value}
-                    onValueChange={(value) => field.onChange(value)}
-                  >
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Select crew" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="nocrew">No Crew</SelectItem>
-                      <SelectItem value="kitchen">Kitchen Crew</SelectItem>
-                      <SelectItem value="technical">Technical Crew</SelectItem>
-                      <SelectItem value="logistics">Logistics Crew</SelectItem>
-                      <SelectItem value="security">Security Crew</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </div>
+            <CrewSelect control={control} />
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="new-status" className="text-right">
                 Status
@@ -299,6 +263,339 @@ export const CreatePaymentForm = ({
             >
               {createMutation.isPending ? "Creating..." : "Create Payment"}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </form>
+    </Dialog>
+  );
+};
+
+const STORAGE_KEY = "registration";
+export const OutreachRegisterForm = ({
+  open,
+  onClose,
+  outreachId,
+}: {
+  open: boolean;
+  onClose: () => void;
+  outreachId: string;
+}) => {
+  const [step, setStep] = useState<number>(1);
+  const [copyText, setCopyText] = useState("Copy");
+
+  const [proof, setProof] = useState<boolean>(false);
+  const [pendingRegistration, setPendingRegistration] =
+    useState<boolean>(false);
+  const [payment, setPayment] = useState<PaymentType | null>(null);
+  const {
+    handleSubmit,
+    register,
+    control,
+    formState: { errors },
+    setValue,
+    watch,
+    reset,
+  } = useForm({
+    resolver: zodResolver(PaymentSchema),
+    defaultValues: { paidAmount: 0.0 },
+  });
+
+  const banksQ = useQuery({
+    queryKey: ["banks"],
+    queryFn: async () => (await fetch(`/api/v1/banks?isPublic=true`)).json(),
+  });
+
+  const handleCopySuccess = () => {
+    setCopyText("Copied!");
+    setTimeout(() => setCopyText("Copy"), 3000);
+  };
+
+  const createMutation = useMutation({
+    mutationFn: (newPayment: any) => axios.post("/api/v1/payments", newPayment),
+    onSuccess: (data: AxiosResponse<{ data: PaymentType }>) => {
+      localStorage.removeItem(STORAGE_KEY);
+      setPayment(data?.data?.data);
+      toast("Success", { description: "Registered successfully." });
+      setStep(3);
+    },
+  });
+
+  const onSubmit: SubmitHandler<z.infer<typeof PaymentSchema>> = (data) => {
+    createMutation.mutate(data);
+  };
+
+  const handleFileUpload = (file: ExtFile[]) => {
+    setProof(true);
+  };
+
+  useEffect(() => {
+    if (outreachId) {
+      setValue("outreachId", outreachId);
+    }
+  }, [outreachId]);
+
+  useEffect(() => {
+    if (banksQ?.data?.data?.length) {
+      setValue("bankId", banksQ?.data?.data[0].id);
+    }
+  }, [banksQ?.data?.data?.length]);
+
+  useEffect(() => {
+    if (Object.keys(errors).length) {
+      setStep(1);
+    }
+  }, [errors]);
+
+  useEffect(() => {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    let parsedData: z.infer<typeof PaymentSchema> | null = savedData
+      ? JSON.parse(savedData)
+      : null;
+    if (parsedData) {
+      setPendingRegistration(true);
+      reset({
+        ...parsedData,
+      });
+    }
+  }, [reset]);
+
+  useEffect(() => {
+    const subscription = watch((data) => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader className="border-b border-gray-500/30 py-2">
+            <DialogTitle>Register For Outreach</DialogTitle>
+            <DialogDescription>Step {step} of 3</DialogDescription>
+            {pendingRegistration && (
+              <DialogDescription>
+                You've a pending registration.
+              </DialogDescription>
+            )}
+          </DialogHeader>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key="step1"
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              className={`${step === 1 ? "" : "hidden"}`}
+            >
+              <div className="flex flex-col gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="new-name" className="text-right">
+                    Name <span className="text-red-500">*</span>
+                  </Label>
+                  <div className="col-span-3">
+                    <Input
+                      id="new-name"
+                      {...register("name", { required: "Name is required" })}
+                      required
+                      className={errors?.name ? "border-red-500" : ""}
+                    />
+                    {errors?.name && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors?.name?.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="new-phone" className="text-right">
+                    Phone <span className="text-red-500">*</span>
+                  </Label>
+                  <div className="col-span-3">
+                    <Input
+                      id="new-phone"
+                      {...register("phone", {
+                        required: "Phone number is required.",
+                      })}
+                      className={errors?.phone ? "border-red-500" : ""}
+                      required
+                    />
+                    {errors.phone && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors?.phone?.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="new-email" className="text-right">
+                    Email
+                  </Label>
+                  <div className="col-span-3">
+                    <Input
+                      id="new-email"
+                      type="email"
+                      {...register("email")}
+                      className={errors?.email ? "border-red-500" : ""}
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors?.email?.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+            <motion.div
+              key="step2"
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              className={`${step === 2 ? "" : "hidden"}`}
+            >
+              <div className="flex flex-col gap-8 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="new-amount" className="text-right">
+                    Paid Amount
+                  </Label>
+                  <div className="col-span-3">
+                    <Input
+                      id="new-amount"
+                      type="number"
+                      step="100"
+                      {...register("paidAmount")}
+                      className={errors?.paidAmount ? "border-red-500" : ""}
+                    />
+                    {errors?.paidAmount && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors?.paidAmount?.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <CrewSelect label={"Are you in any Crew?"} control={control} />
+                <div className="flex flex-col gap-4 w-full">
+                  <Label className="text-left">
+                    Payment{" "}
+                    {banksQ?.data?.data?.length > 1 ? "Options" : "Details"}
+                  </Label>
+                  {banksQ?.data?.data?.length && (
+                    <RadioGroup
+                      defaultValue={banksQ?.data?.data[0].id}
+                      onValueChange={(v) => setValue("bankId", v)}
+                    >
+                      {banksQ?.data?.data?.map(
+                        (item: BankType, index: number) => (
+                          <div
+                            key={`bank-${index}`}
+                            className="flex flex-row gap-8 items-center"
+                          >
+                            {banksQ?.data?.data?.length > 1 && (
+                              <RadioGroupItem value={item.id} id={item.id} />
+                            )}
+                            <div className="flex flex-col gap-4 bg-gray-300/10 p-2 rounded-md border-1 border-gray-500 w-full">
+                              <div className="flex flex-col gap-2 min-w-32">
+                                <p
+                                  className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                                >
+                                  Bank Name
+                                </p>
+                                <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                                  {item.bank}
+                                </div>
+                              </div>
+                              <div className="flex flex-col gap-2 min-w-32">
+                                <p
+                                  className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                                >
+                                  Account No.
+                                </p>
+                                <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                                  <div className="flex flex-row items-center gap-12">
+                                    {/* <Input
+                                      defaultValue={}
+                                      readOnly
+                                    /> */}
+                                    <span className="font-bold text-lg">
+                                      {item.acctNo}
+                                    </span>
+                                    <Button
+                                      onClick={() =>
+                                        copyToClipboard(
+                                          item.acctNo,
+                                          handleCopySuccess
+                                        )
+                                      }
+                                      size="sm"
+                                      className="px-3"
+                                    >
+                                      <span className="sr-only">
+                                        {copyText}
+                                      </span>
+                                      <CopyIcon />
+                                      {copyText}
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex flex-col gap-2 min-w-32">
+                                <p
+                                  className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                                >
+                                  Account Name
+                                </p>
+                                <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                                  {item?.name}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </RadioGroup>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              key="step3"
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              className={`flex flex-col gap-4 ${step === 3 ? "" : "hidden"}`}
+            >
+              <Label>Kindly Upload Proof of Payment</Label>
+              <FileUpload
+                uploadUrl={`/api/v1/payments/proof?id=${payment?.id}`}
+                onUploadFinish={handleFileUpload}
+              />
+            </motion.div>
+          </AnimatePresence>
+
+          <DialogFooter>
+            {step > 1 && (
+              <Button variant="outline" onClick={() => setStep(step - 1)}>
+                Back
+              </Button>
+            )}
+            {step == 1 ? (
+              <Button onClick={() => setStep(step + 1)}>Next</Button>
+            ) : step == 2 ? (
+              <Button
+                type="submit"
+                onClick={handleSubmit(onSubmit)}
+                disabled={createMutation.isPending}
+              >
+                {createMutation.isPending
+                  ? "Registering..."
+                  : "I've made the transfer"}
+              </Button>
+            ) : (
+              <Button onClick={onClose} disabled={!proof}>
+                Done!
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </form>

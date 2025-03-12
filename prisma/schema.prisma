@@ -55,6 +55,7 @@ model Payment {
   email         String?       @unique
   phone         String?       
   paidAmount    Float?        @default(0.0)
+  proof_image   String?
   outreachId    String?
   outreach      Outreach?     @relation(fields: [outreachId], references: [id])
   bankId        String?

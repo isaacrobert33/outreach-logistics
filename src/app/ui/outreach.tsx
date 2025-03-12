@@ -24,6 +24,7 @@ import { OutreachType } from "@/lib/types/common";
 import { toast } from "sonner";
 import { CreateOutreachForm, UpdateOutreachForm } from "./outreach-form";
 import AccountMenu from "./account-menu";
+import { OutreachShare } from "./outreach/share";
 
 export default function Outreachs() {
   const [selectedPayment, setSelectedPayment] = useState<OutreachType | null>(
@@ -142,6 +143,7 @@ export default function Outreachs() {
                           {outreach.createdAt}
                         </TableCell>
                         <TableCell className="text-right">
+                          <OutreachShare outreach={outreach} />
                           <Button
                             variant="ghost"
                             size="sm"
