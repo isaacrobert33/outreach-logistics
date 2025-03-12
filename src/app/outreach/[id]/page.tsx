@@ -12,11 +12,11 @@ const fetchOutreach = async (id?: string) => {
   return axios.get<{ data: OutreachType }>(`/api/v1/outreach/${id}`);
 };
 
-export default function Outreach({ params }: { params: { id?: string } }) {
+export default function Outreach() {
   const { id } = useParams<any>();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["outreachData", params],
+    queryKey: ["outreachData", id],
     queryFn: () => fetchOutreach(id as any),
     enabled: !!id,
   });
