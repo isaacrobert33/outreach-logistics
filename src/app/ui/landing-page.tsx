@@ -350,8 +350,8 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t bg-white dark:bg-gray-950 dark:border-gray-800 mt-[8%]">
         <div className="container px-4 md:px-6 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="space-y-4">
+          <div className="flex justify-between w-full">
+            <div className="space-y-4 max-w-[40%]">
               <div className="flex items-center gap-2">
                 <Heart className="h-6 w-6 text-primary" />
                 <span className="text-xl font-bold">
@@ -399,19 +399,19 @@ export default function LandingPage() {
             <div>
               <h3 className="font-medium mb-4">Contact</h3>
               <ul className="space-y-2">
-                <li className="text-gray-500">{data?.data?.data?.location}</li>
+                <li className="text-gray-500">Akure Ondo State, Nigeria.</li>
                 <li>
                   <Link
-                    href="mailto:info@outreachconnect.com"
-                    className="text-gray-500 hover:text-primary"
+                    href="mailto:isaac33robert@gmail.com"
+                    className="text-gray-500 hover:text-primary hover:underline"
                   >
                     isaac33robert@gmail.com
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="tel:+1234567890"
-                    className="text-gray-500 hover:text-primary"
+                    href="tel:08133642174"
+                    className="text-gray-500 hover:text-primary hover:underline"
                   >
                     (+234) 08133642174
                   </Link>
