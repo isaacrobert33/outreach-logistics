@@ -99,8 +99,8 @@ const DashboardLayout = ({ children }: { children: any }) => {
 
     <SidebarProvider>
       <AppSidebar />
-      <main className="w-full">
-        <div className="w-full bg-sidebar">
+      <main className="w-full bg-gray-900">
+        <div className="w-full bg-gray-950">
           <SidebarTrigger />
         </div>
         {children}

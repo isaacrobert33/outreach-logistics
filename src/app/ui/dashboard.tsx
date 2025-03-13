@@ -159,7 +159,7 @@ export default function Dashboard() {
   return (
     <div className="flex-1 flex flex-col">
       {/* Header */}
-      <header className="bg-sidebar border-b dark:border-gray-600/30 p-4 flex items-center justify-between">
+      <header className="bg-gray-950 border-b dark:border-gray-600/30 p-4 flex items-center justify-between">
         {/* <h1 className="text-xl font-bold md:hidden flex items-center gap-2">
           <DollarSign className="h-6 w-6" />
           <span>Outreach</span>

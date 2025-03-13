@@ -36,7 +36,7 @@ const AppSidebar = () => {
   const pathname = usePathname();
   return (
     <Sidebar>
-      <SidebarContent>
+      <SidebarContent className="bg-gray-950">
         <SidebarGroup>
           <SidebarGroupLabel className="text-xl font-bold my-4">
             Outreach Logistsics

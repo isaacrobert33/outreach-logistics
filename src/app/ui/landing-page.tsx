@@ -6,30 +6,7 @@ import Link from "next/link";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Calendar,
-  Clock,
-  MapPin,
-  ArrowRight,
-  Users,
-  Lightbulb,
-  Heart,
-  Globe,
-  Menu,
-  X,
-  ChevronRight,
-  Linkedin,
-  Loader2,
-} from "lucide-react";
+import { Calendar, MapPin, ArrowRight, Heart, Loader2 } from "lucide-react";
 import {
   SiFacebook,
   SiX,
@@ -43,7 +20,6 @@ import { OutreachType } from "@/lib/types/common";
 import { OutreachRegisterForm } from "./payment-form";
 
 export default function LandingPage() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [registerDialog, setRegisterDialog] = useState<boolean>(false);
   const { data, isLoading } = useQuery({
     queryKey: ["latestOutreach"],
@@ -60,7 +36,7 @@ export default function LandingPage() {
   }, []);
 
   return isLoading ? (
-    <div className="flex flex-col gap-9 items-center justify-center w-full h-full p-8">
+    <div className="flex flex-col gap-9 items-center justify-center w-full min-h-screen p-8">
       <Loader2 className="mr-2 h-6 w-6 animate-spin" />
       Fetching Outreach information, please wait...
     </div>
