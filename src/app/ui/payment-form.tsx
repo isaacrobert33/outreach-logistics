@@ -103,7 +103,7 @@ export const CreatePaymentForm = ({
           </DialogHeader>
           <div className="flex flex-col gap-4 py-4 max-h-[70vh] overflow-y-auto">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="new-name" className="text-right">
+              <Label htmlFor="new-name" className="text-left">
                 Name
               </Label>
               <div className="col-span-3">
@@ -120,7 +120,7 @@ export const CreatePaymentForm = ({
               </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="new-phone" className="text-right">
+              <Label htmlFor="new-phone" className="text-left">
                 Phone
               </Label>
               <div className="col-span-3">
@@ -137,7 +137,7 @@ export const CreatePaymentForm = ({
               </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="new-email" className="text-right">
+              <Label htmlFor="new-email" className="text-left">
                 Email
               </Label>
               <div className="col-span-3">
@@ -155,7 +155,7 @@ export const CreatePaymentForm = ({
               </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="new-amount" className="text-right">
+              <Label htmlFor="new-amount" className="text-left">
                 Amount
               </Label>
               <div className="col-span-3">
@@ -175,7 +175,7 @@ export const CreatePaymentForm = ({
             </div>
             <CrewSelect control={control} />
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="new-status" className="text-right">
+              <Label htmlFor="new-status" className="text-left">
                 Status
               </Label>
               <Controller
@@ -201,7 +201,7 @@ export const CreatePaymentForm = ({
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Outreach</Label>
+              <Label className="text-left">Outreach</Label>
               <Controller
                 name="outreachId"
                 control={control}
@@ -229,7 +229,7 @@ export const CreatePaymentForm = ({
             </div>
 
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Payment Option</Label>
+              <Label className="text-left">Payment Option</Label>
               <Controller
                 name="bankId"
                 control={control}
@@ -300,7 +300,14 @@ export const OutreachRegisterForm = ({
     reset,
   } = useForm({
     resolver: zodResolver(PaymentSchema),
-    defaultValues: { paidAmount: 0.0 },
+    defaultValues: {
+      paidAmount: 0.0,
+      name: "",
+      email: "",
+      phone: "",
+      bankId: "",
+      outreachId: "",
+    },
   });
 
   const banksQ = useQuery({
@@ -329,7 +336,8 @@ export const OutreachRegisterForm = ({
     });
     onClose();
     setStep(1);
-    reset({});
+    reset();
+    localStorage.removeItem(STORAGE_KEY);
   };
 
   const onSubmit: SubmitHandler<z.infer<typeof PaymentSchema>> = (data) => {
@@ -401,7 +409,7 @@ export const OutreachRegisterForm = ({
             >
               <div className="flex flex-col gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="new-name" className="text-right">
+                  <Label htmlFor="new-name" className="text-left">
                     Name <span className="text-red-500">*</span>
                   </Label>
                   <div className="col-span-3">
@@ -419,7 +427,7 @@ export const OutreachRegisterForm = ({
                   </div>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="new-phone" className="text-right">
+                  <Label htmlFor="new-phone" className="text-left">
                     Phone <span className="text-red-500">*</span>
                   </Label>
                   <div className="col-span-3">
@@ -439,7 +447,7 @@ export const OutreachRegisterForm = ({
                   </div>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="new-email" className="text-right">
+                  <Label htmlFor="new-email" className="text-left">
                     Email
                   </Label>
                   <div className="col-span-3">
@@ -466,7 +474,7 @@ export const OutreachRegisterForm = ({
             >
               <div className="flex flex-col gap-8 py-4">
                 <div className="flex flex-col gap-4 max-w-2/4">
-                  <Label htmlFor="new-amount" className="text-right">
+                  <Label htmlFor="new-amount" className="text-left">
                     Paid Amount
                   </Label>
                   <div className="col-span-3">
@@ -689,7 +697,7 @@ export const UpdatePaymentForm = ({
           {payment && (
             <div className="flex flex-col gap-4 py-4 max-h-[70vh] overflow-y-auto">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="payment-id" className="text-right">
+                <Label htmlFor="payment-id" className="text-left">
                   ID
                 </Label>
                 <Input
@@ -700,7 +708,7 @@ export const UpdatePaymentForm = ({
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="update-name" className="text-right">
+                <Label htmlFor="update-name" className="text-left">
                   Name
                 </Label>
                 <div className="col-span-3">
@@ -717,7 +725,7 @@ export const UpdatePaymentForm = ({
                 </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="update-phone" className="text-right">
+                <Label htmlFor="update-phone" className="text-left">
                   Phone
                 </Label>
                 <div className="col-span-3">
@@ -734,7 +742,7 @@ export const UpdatePaymentForm = ({
                 </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="update-email" className="text-right">
+                <Label htmlFor="update-email" className="text-left">
                   Email
                 </Label>
                 <div className="col-span-3">
@@ -752,7 +760,7 @@ export const UpdatePaymentForm = ({
                 </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="update-amount" className="text-right">
+                <Label htmlFor="update-amount" className="text-left">
                   Amount
                 </Label>
                 <div className="col-span-3">
@@ -771,7 +779,7 @@ export const UpdatePaymentForm = ({
                 </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="new-crew" className="text-right">
+                <Label htmlFor="new-crew" className="text-left">
                   Crew
                 </Label>
                 <Controller
@@ -803,7 +811,7 @@ export const UpdatePaymentForm = ({
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="update-status" className="text-right">
+                <Label htmlFor="update-status" className="text-left">
                   Status
                 </Label>
                 <Controller
@@ -829,7 +837,7 @@ export const UpdatePaymentForm = ({
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label className="text-right">Outreach</Label>
+                <Label className="text-left">Outreach</Label>
                 <Controller
                   name="outreachId"
                   control={control}
@@ -856,7 +864,7 @@ export const UpdatePaymentForm = ({
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label className="text-right">Payment Option</Label>
+                <Label className="text-left">Payment Option</Label>
                 <Controller
                   name="bankId"
                   control={control}
