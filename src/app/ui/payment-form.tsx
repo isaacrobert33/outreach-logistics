@@ -381,7 +381,7 @@ export const OutreachRegisterForm = ({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent className="sm:max-w-[600px] bg-gray-950">
+        <DialogContent className="sm:max-w-[600px] bg-gray-950 max-h-[80vh] overflow-y-auto">
           <DialogHeader className="border-b border-gray-500/30 py-2">
             <DialogTitle>Register For Outreach</DialogTitle>
             <DialogDescription>Step {step} of 3</DialogDescription>
