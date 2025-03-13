@@ -4,6 +4,8 @@ import "./globals.css";
 import { NextAuthProvider, QueryProvider } from "@/lib/providers";
 import { Toaster } from "sonner";
 import { Suspense } from "react";
+import { OutreachType } from "@/lib/types/common";
+import axios from "axios";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,6 +21,33 @@ export const metadata: Metadata = {
   title: "Outreach '25",
   description: "Outreach '25",
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { artistId: string };
+}) {
+  try {
+    const data = await axios.get<{ data: OutreachType }>(
+      `/api/v1/outreach/latest`
+    );
+    return {
+      title: data?.data?.data?.theme || `Outreach ${new Date().getFullYear()}`,
+      description: data?.data?.data?.description,
+      openGraph: {
+        title:
+          data?.data?.data?.theme || `Outreach ${new Date().getFullYear()}`,
+        description: data?.data?.data?.description,
+        url: `https://outreach-caccf.vercel.app/`,
+      },
+    };
+  } catch (err) {
+    return {
+      title: "Outreach",
+      description: `Outreach ${new Date().getFullYear()}`,
+    };
+  }
+}
 
 export default function RootLayout({
   children,
