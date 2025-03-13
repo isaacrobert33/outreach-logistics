@@ -30,6 +30,7 @@ import { OutreachRegisterForm } from "./payment-form";
 
 export default function LandingPage() {
   const [registerDialog, setRegisterDialog] = useState<boolean>(false);
+  const [bank, setBank] = useState<BankType | null>(null);
   const { data, isLoading } = useQuery({
     queryKey: ["latestOutreach"],
     queryFn: () => axios.get<{ data: OutreachType }>(`/api/v1/outreach/latest`),
@@ -44,9 +45,6 @@ export default function LandingPage() {
       return response;
     },
   });
-  const firstBank = banksQ?.data?.data?.data
-    ? banksQ?.data?.data?.data[0]
-    : null;
 
   // Initialize AOS
   useEffect(() => {
@@ -56,6 +54,14 @@ export default function LandingPage() {
       mirror: true,
     });
   }, []);
+
+  useEffect(() => {
+    if (banksQ?.data?.data?.data?.length) {
+      setBank(banksQ?.data?.data?.data[0]);
+    }
+  }, [banksQ, setBank]);
+
+  console.log(banksQ?.data?.data?.data);
 
   return isLoading || banksQ?.isLoading ? (
     <div className="flex flex-col gap-9 items-center justify-center w-full min-h-screen p-8">
@@ -305,41 +311,43 @@ export default function LandingPage() {
               <p className="mt-4 text-gray-500 dark:text-gray-400 text-sm md:text-lg">
                 God bless you as you do!
               </p>
-              <div className="mt-8 grid gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="p-2 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <PinIcon className="h-5 w-5 text-primary" />
+              {bank && (
+                <div className="mt-8 grid gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <PinIcon className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Acct. No:</h3>
+                      <p className="text-gray-500 dark:text-gray-400">
+                        {bank?.acctNo}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-medium">Acct. No:</h3>
-                    <p className="text-gray-500 dark:text-gray-400">
-                      {firstBank?.acctNo}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <LandmarkIcon className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Bank Name</h3>
+                      <p className="text-gray-500 dark:text-gray-400">
+                        {bank?.bank}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <SquareUserIcon className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Acct. Name</h3>
+                      <p className="text-gray-500 dark:text-gray-400">
+                        {bank?.name}
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="p-2 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <LandmarkIcon className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Bank Name</h3>
-                    <p className="text-gray-500 dark:text-gray-400">
-                      {firstBank?.bank}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="p-2 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <SquareUserIcon className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Acct. Name</h3>
-                    <p className="text-gray-500 dark:text-gray-400">
-                      {firstBank?.name}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
             <div
               className="mx-auto lg:mx-0 relative sm:hidden"
