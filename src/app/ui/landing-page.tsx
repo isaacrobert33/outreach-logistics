@@ -350,8 +350,8 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t bg-white dark:bg-gray-950 dark:border-gray-800 mt-[8%]">
         <div className="container px-4 md:px-6 py-12">
-          <div className="flex justify-between w-full">
-            <div className="space-y-4 max-w-[40%]">
+          <div className="flex sm:flex-row flex-col justify-between w-full gap-16">
+            <div className="space-y-4 sm:max-w-[40%]">
               <div className="flex items-center gap-2">
                 <Heart className="h-6 w-6 text-primary" />
                 <span className="text-xl font-bold">
