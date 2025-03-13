@@ -22,11 +22,7 @@ const geistMono = Geist_Mono({
 //   description: "Outreach '25",
 // };
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { artistId: string };
-}) {
+export async function generateMetadata() {
   try {
     const data = await axios.get<{ data: OutreachType }>(
       `/api/v1/outreach/latest`
