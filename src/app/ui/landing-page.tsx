@@ -21,12 +21,11 @@ import {
   SiX,
   SiInstagram,
   SiYoutube,
-  SiBankofamerica,
 } from "@icons-pack/react-simple-icons";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { OutreachType } from "@/lib/types/common";
+import { BankType, OutreachType } from "@/lib/types/common";
 import { OutreachRegisterForm } from "./payment-form";
 
 export default function LandingPage() {
@@ -35,6 +34,17 @@ export default function LandingPage() {
     queryKey: ["latestOutreach"],
     queryFn: () => axios.get<{ data: OutreachType }>(`/api/v1/outreach/latest`),
   });
+
+  const banksQ = useQuery({
+    queryKey: ["banks"],
+    queryFn: async () => {
+      const response = await axios.get<{ data: BankType[] }>(
+        `/api/v1/banks?isPublic=true`
+      );
+      return response;
+    },
+  });
+  const firstBank = banksQ?.data?.data?.data[0];
 
   // Initialize AOS
   useEffect(() => {
@@ -301,7 +311,7 @@ export default function LandingPage() {
                   <div>
                     <h3 className="font-medium">Acct. No:</h3>
                     <p className="text-gray-500 dark:text-gray-400">
-                      0815297744
+                      {firstBank?.acctNo}
                     </p>
                   </div>
                 </div>
@@ -312,7 +322,7 @@ export default function LandingPage() {
                   <div>
                     <h3 className="font-medium">Bank Name</h3>
                     <p className="text-gray-500 dark:text-gray-400">
-                      Guaranty Trust Bank
+                      {firstBank?.bank}
                     </p>
                   </div>
                 </div>
@@ -323,7 +333,7 @@ export default function LandingPage() {
                   <div>
                     <h3 className="font-medium">Acct. Name</h3>
                     <p className="text-gray-500 dark:text-gray-400">
-                      Osho Ilerioluwa Hannah
+                      {firstBank?.name}
                     </p>
                   </div>
                 </div>
