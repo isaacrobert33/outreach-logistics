@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarIcon, MapPinIcon, Clock10Icon } from "lucide-react";
+import { CalendarIcon, MapPinIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OutreachType } from "@/lib/types/common";
 import { useState } from "react";
@@ -28,7 +28,7 @@ export default function HeroSection({ data }: { data: OutreachType }) {
             </div>
             <div className="flex items-center">
               <MapPinIcon className="mr-2 h-5 w-5" />
-              <span>{data?.address}</span>
+              <span>{data?.location}</span>
             </div>
             {/* <div className="flex items-center">
               <Clock10Icon className="mr-2 h-5 w-5" />
