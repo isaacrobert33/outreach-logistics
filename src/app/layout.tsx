@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NextAuthProvider, QueryProvider } from "@/lib/providers";
@@ -25,7 +24,7 @@ const geistMono = Geist_Mono({
 export async function generateMetadata() {
   try {
     const data = await axios.get<{ data: OutreachType }>(
-      `/api/v1/outreach/latest`
+      `https://outreach-caccf.vercel.app/api/v1/outreach/latest`
     );
     return {
       title: data?.data?.data?.theme || `Outreach ${new Date().getFullYear()}`,
