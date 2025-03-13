@@ -22,7 +22,7 @@ export const PATCH = async (
 ) => {
   const { id } = await params;
 
-  const { theme, description } = await req.json();
+  const { theme, description, location, date } = await req.json();
   const outreach = await prisma.outreach.update({
     where: {
       id,
@@ -30,6 +30,8 @@ export const PATCH = async (
     data: {
       theme,
       description,
+      location,
+      date,
     },
   });
   return Response({ status: 202, data: outreach });

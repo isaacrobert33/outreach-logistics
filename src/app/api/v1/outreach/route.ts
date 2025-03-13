@@ -8,11 +8,13 @@ export const GET = async () => {
 };
 
 export const POST = async (req: NextRequest) => {
-  const { theme, description } = await req.json();
+  const { theme, description, location, date } = await req.json();
   const account = await prisma.outreach.create({
     data: {
       theme,
       description,
+      location,
+      date,
     },
   });
   return Response({ status: 201, data: account });
