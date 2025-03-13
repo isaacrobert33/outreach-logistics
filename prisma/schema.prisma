@@ -54,7 +54,7 @@ model Payment {
   name          String?
   paymentStatus PaymentStatus @default(NOT_PAID)
   crew          String?       @default("nocrew")
-  email         String?       @unique
+  email         String?      
   phone         String?       
   paidAmount    Float?        @default(0.0)
   proof_image   String?

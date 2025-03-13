@@ -30,7 +30,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PaymentSchema } from "@/lib/schema";
 import FileUpload from "@/components/file-uploader";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { ExtFile } from "@files-ui/react";
 import CrewSelect from "@/components/crews-select";
 import { copyToClipboard } from "@/lib/utils";
@@ -323,10 +323,13 @@ export const OutreachRegisterForm = ({
   const createMutation = useMutation({
     mutationFn: (newPayment: any) => axios.post("/api/v1/payments", newPayment),
     onSuccess: (data: AxiosResponse<{ data: PaymentType }>) => {
-      localStorage.removeItem(STORAGE_KEY);
       setPayment(data?.data?.data);
+      localStorage.removeItem(STORAGE_KEY);
       toast("Success", { description: "Registered successfully." });
       setStep(3);
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toast("Error", { description: error.response?.data?.message || "" });
     },
   });
 
@@ -584,11 +587,15 @@ export const OutreachRegisterForm = ({
               exit={{ opacity: 0, x: 100 }}
               className={`flex flex-col gap-4 ${step === 3 ? "" : "hidden"}`}
             >
-              <Label>Kindly Upload Proof of Payment</Label>
-              <FileUpload
-                uploadUrl={`/api/v1/payments/proof?id=${payment?.id}`}
-                onUploadFinish={handleFileUpload}
-              />
+              {payment && (
+                <>
+                  <Label>Kindly Upload Proof of Payment</Label>
+                  <FileUpload
+                    uploadUrl={`/api/v1/payments/proof?id=${payment?.id}`}
+                    onUploadFinish={handleFileUpload}
+                  />
+                </>
+              )}
             </motion.div>
           </AnimatePresence>
 

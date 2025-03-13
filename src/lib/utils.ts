@@ -36,7 +36,7 @@ export const Response = (body: {
     body.message = ALL_ERROR_CODES[body.status];
     body.success = false;
   }
-  return NextResponse.json(body);
+  return NextResponse.json(body, { status: body.status });
 };
 
 export const formatNumber = (num: string | number) =>

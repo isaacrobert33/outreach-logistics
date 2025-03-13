@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { formatNumber, Response } from "@/lib/utils";
 import { PaymentSchema } from "@/lib/schema";
+import { ZodError } from "zod";
 
 export const GET = async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
@@ -60,6 +61,7 @@ const generatePaymentId = async (outreachId?: string, crew?: string) => {
 export const POST = async (req: NextRequest) => {
   try {
     const body = await req.json();
+    console.log(body);
     const validatedBody = PaymentSchema.parse(body);
 
     const payment = await prisma.payment.create({
@@ -81,6 +83,7 @@ export const POST = async (req: NextRequest) => {
     return Response({
       status: 400,
       message: error?.message,
+      data: error.errors,
     });
   }
 };

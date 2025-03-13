@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
 import prisma from "@/lib/prisma";
 import { Response } from "@/lib/utils";
 import cloudinary from "cloudinary";
@@ -55,7 +54,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ result }, { status: 200 });
   } catch (error) {
-    console.error(error);
     return NextResponse.json(
       { error: `Failed to upload file ${error}` },
       { status: 500 }
