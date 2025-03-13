@@ -11,25 +11,25 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import { BanknoteIcon, GridIcon } from "lucide-react";
+import { BanknoteIcon, CreditCardIcon, GridIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const items = [
   {
     title: "Payments",
-    url: "/dashboard",
+    url: "/admin/dashboard",
     icon: BanknoteIcon,
   },
   {
     title: "Outreach",
-    url: "/dashboard/outreach",
+    url: "/admin/dashboard/outreach",
     icon: GridIcon,
   },
   {
     title: "Payment Options",
-    url: "/dashboard/banks",
-    icon: BanknoteIcon,
+    url: "/admin/dashboard/banks",
+    icon: CreditCardIcon,
   },
 ];
 const AppSidebar = () => {

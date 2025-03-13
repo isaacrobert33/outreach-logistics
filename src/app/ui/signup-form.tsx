@@ -66,7 +66,7 @@ export function SignupForm() {
           password: data.password,
           redirect: false,
         });
-        redirect("/dashboard");
+        redirect("/admin/dashboard");
       });
     } catch (error) {
       if (error instanceof Error) {

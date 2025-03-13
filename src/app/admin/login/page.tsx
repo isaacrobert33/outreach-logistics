@@ -33,7 +33,7 @@ export default function Auth() {
   useEffect(() => {
     // If the user is already authenticated, redirect to dashboard
     if (status === "authenticated") {
-      router.push("/dashboard");
+      router.push("/admin/dashboard");
     }
 
     // Check if there's an error from the callback
@@ -52,7 +52,7 @@ export default function Auth() {
   const handleSocialSignIn = async (provider: "google" | "github") => {
     try {
       setIsLoading({ ...isLoading, [provider]: true });
-      await signIn(provider, { callbackUrl: "/dashboard" });
+      await signIn(provider, { callbackUrl: "/admin/dashboard" });
     } catch (error) {
       console.error(`Error signing in with ${provider}:`, error);
     } finally {
@@ -90,7 +90,9 @@ export default function Auth() {
           >
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="signup" disabled>
+                Sign Up
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="login">
               <LoginForm />
