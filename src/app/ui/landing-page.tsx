@@ -405,15 +405,22 @@ export default function LandingPage() {
                     href="mailto:isaac33robert@gmail.com"
                     className="text-gray-500 hover:text-primary hover:underline"
                   >
-                    isaac33robert@gmail.com
+                    caccfoutreachlogistics@gmail.com
                   </Link>
                 </li>
-                <li>
+                <li className="flex flex-row justify-between gap-3">
                   <Link
                     href="tel:08133642174"
                     className="text-gray-500 hover:text-primary hover:underline"
                   >
-                    (+234) 08133642174
+                    (+234) 09033880262
+                  </Link>
+                  /
+                  <Link
+                    href="tel:08133642174"
+                    className="text-gray-500 hover:text-primary hover:underline"
+                  >
+                    (+234) 09154676739
                   </Link>
                 </li>
               </ul>
