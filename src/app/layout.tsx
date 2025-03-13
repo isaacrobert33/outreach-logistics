@@ -17,10 +17,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Outreach '25",
-  description: "Outreach '25",
-};
+// export const metadata: Metadata = {
+//   title: "Outreach '25",
+//   description: "Outreach '25",
+// };
 
 export async function generateMetadata({
   params,
