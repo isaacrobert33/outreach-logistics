@@ -6,12 +6,22 @@ import Link from "next/link";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, ArrowRight, Heart, Loader2 } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  ArrowRight,
+  Heart,
+  Loader2,
+  PinIcon,
+  LandmarkIcon,
+  SquareUserIcon,
+} from "lucide-react";
 import {
   SiFacebook,
   SiX,
   SiInstagram,
   SiYoutube,
+  SiBankofamerica,
 } from "@icons-pack/react-simple-icons";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -257,6 +267,85 @@ export default function LandingPage() {
           </div>
         </div>
       </section> */}
+
+      <section className="relative py-20 md:py-32 overflow-hidden">
+        <div className="absolute inset-0" />
+        <div className="container px-4 md:px-6 relative">
+          <div className="grid gap-8 lg:grid-cols-2 lg:gap-28 items-center">
+            <div
+              className="mx-auto lg:mx-0 relative hidden sm:block"
+              data-aos="fade-right"
+              data-aos-delay="200"
+            >
+              <div className="absolute -inset-4 rounded-xl bg-gradient-to-r from-primary/20 to-purple-500/20 blur-xl" />
+              <Image
+                src="/donation.jpg"
+                alt="Donation Image"
+                width={450}
+                height={450}
+                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover opacity-45"
+              />
+            </div>
+            <div data-aos="fade-left">
+              <h1 className="text-2xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-4xl">
+                For Donations & Support
+              </h1>
+              <p className="mt-4 text-gray-500 dark:text-gray-400 text-sm md:text-lg">
+                God bless you as you do!
+              </p>
+              <div className="mt-8 grid gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="p-2 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <PinIcon className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium">Acct. No:</h3>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      0815297744
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="p-2 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <LandmarkIcon className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium">Bank Name</h3>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      Guaranty Trust Bank
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="p-2 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <SquareUserIcon className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium">Acct. Name</h3>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      Osho Ilerioluwa Hannah
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              className="mx-auto lg:mx-0 relative sm:hidden"
+              data-aos="fade-right"
+              data-aos-delay="200"
+            >
+              <div className="absolute -inset-4 rounded-xl bg-gradient-to-r from-primary/20 to-purple-500/20 blur-xl" />
+              <Image
+                src="/donation.jpg"
+                alt="Donation Image"
+                width={450}
+                height={450}
+                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover opacity-45"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t bg-white dark:bg-gray-950 dark:border-gray-800 mt-[8%]">
