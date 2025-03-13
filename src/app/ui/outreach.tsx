@@ -116,6 +116,8 @@ export default function Outreachs() {
                   <TableRow>
                     <TableHead>Outreach Theme</TableHead>
                     <TableHead>Description</TableHead>
+                    <TableHead>Location</TableHead>
+                    <TableHead>Event Date</TableHead>
                     <TableHead className="hidden md:table-cell">Date</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -138,6 +140,12 @@ export default function Outreachs() {
                         </TableCell>
                         <TableCell className="capitalize">
                           {outreach.description}
+                        </TableCell>
+                        <TableCell className="capitalize">
+                          {outreach.location}
+                        </TableCell>
+                        <TableCell className="capitalize">
+                          {outreach.date}
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
                           {outreach.createdAt}

@@ -121,7 +121,7 @@ export default function LandingPage() {
                   <div>
                     <h3 className="font-medium">Location</h3>
                     <p className="text-gray-500 dark:text-gray-400">
-                      {data?.data?.data?.date || "Anticipate"}
+                      {data?.data?.data?.location || "Anticipate"}
                     </p>
                   </div>
                 </div>
