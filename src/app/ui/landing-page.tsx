@@ -134,7 +134,7 @@ export default function LandingPage() {
                   <div>
                     <h3 className="font-medium">Date</h3>
                     <p className="text-gray-500 dark:text-gray-400">
-                      {data?.data?.data?.dateTime || "Anticipate"}
+                      {data?.data?.data?.date || "Anticipate"}
                     </p>
                   </div>
                 </div>
@@ -145,7 +145,7 @@ export default function LandingPage() {
                   <div>
                     <h3 className="font-medium">Location</h3>
                     <p className="text-gray-500 dark:text-gray-400">
-                      {data?.data?.data?.dateTime || "Anticipate"}
+                      {data?.data?.data?.date || "Anticipate"}
                     </p>
                   </div>
                 </div>
@@ -334,7 +334,7 @@ export default function LandingPage() {
             <div>
               <h3 className="font-medium mb-4">Contact</h3>
               <ul className="space-y-2">
-                <li className="text-gray-500">{data?.data?.data?.address}</li>
+                <li className="text-gray-500">{data?.data?.data?.location}</li>
                 <li>
                   <Link
                     href="mailto:info@outreachconnect.com"

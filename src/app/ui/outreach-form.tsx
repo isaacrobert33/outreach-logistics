@@ -107,6 +107,40 @@ export const CreateOutreachForm = ({
                 )}
               </div>
             </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="new-location" className="text-right">
+                Event Location
+              </Label>
+              <div className="col-span-3">
+                <Input
+                  id="new-location"
+                  {...register("location")}
+                  className={errors?.location ? "border-red-500" : ""}
+                />
+                {errors?.location && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors?.location?.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="new-date" className="text-right">
+                Event Date
+              </Label>
+              <div className="col-span-3">
+                <Input
+                  id="new-date"
+                  {...register("date")}
+                  className={errors?.date ? "border-red-500" : ""}
+                />
+                {errors?.location && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors?.date?.message}
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={onClose}>
@@ -183,12 +217,12 @@ export const UpdateOutreachForm = ({
           {outreach && (
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="new-theme" className="text-right">
+                <Label htmlFor="update-theme" className="text-right">
                   Outreach Theme
                 </Label>
                 <div className="col-span-3">
                   <Input
-                    id="new-theme"
+                    id="update-theme"
                     {...register("theme")}
                     className={errors?.theme ? "border-red-500" : ""}
                   />
@@ -200,18 +234,52 @@ export const UpdateOutreachForm = ({
                 </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="new-description" className="text-right">
+                <Label htmlFor="update-description" className="text-right">
                   Description
                 </Label>
                 <div className="col-span-3">
                   <Input
-                    id="new-description"
+                    id="update-description"
                     {...register("description")}
                     className={errors?.description ? "border-red-500" : ""}
                   />
                   {errors?.description && (
                     <p className="text-red-500 text-xs mt-1">
                       {errors?.description?.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="update-location" className="text-right">
+                  Event Location
+                </Label>
+                <div className="col-span-3">
+                  <Input
+                    id="update-location"
+                    {...register("location")}
+                    className={errors?.location ? "border-red-500" : ""}
+                  />
+                  {errors?.location && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors?.location?.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="update-date" className="text-right">
+                  Event Date
+                </Label>
+                <div className="col-span-3">
+                  <Input
+                    id="update-date"
+                    {...register("date")}
+                    className={errors?.date ? "border-red-500" : ""}
+                  />
+                  {errors?.location && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors?.date?.message}
                     </p>
                   )}
                 </div>

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { date, z } from "zod";
 
 export const PaymentStatus = z.enum(["NOT_PAID", "PENDING", "PAID"]);
 
@@ -6,7 +6,7 @@ export const PaymentSchema = z.object({
   name: z.string().optional(),
   paymentStatus: PaymentStatus.optional(),
   crew: z.string().optional(),
-  email: z.string().email().optional(),
+  email: z.string().nullable().optional(),
   phone: z.string().min(10).optional().nullable(),
   paidAmount: z
     .number()
@@ -28,4 +28,6 @@ export const BankSchema = z.object({
 export const OutreachSchema = z.object({
   theme: z.string(),
   description: z.string().optional(),
+  location: z.string().optional(),
+  date: z.string().optional(),
 });
