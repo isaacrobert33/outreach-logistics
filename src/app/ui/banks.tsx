@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DollarSign, Pencil, PlusIcon, Trash2 } from "lucide-react";
+import { Pencil, PlusIcon, Trash2 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { BankType } from "@/lib/types/common";
 import { toast } from "sonner";
@@ -79,11 +79,11 @@ export default function Banks() {
   return (
     <div className="flex-1 flex flex-col">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 p-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold md:hidden flex items-center gap-2">
+      <header className="bg-sidebar border-b dark:border-gray-600/30 p-4 flex items-center justify-between">
+        {/* <h1 className="text-xl font-bold md:hidden flex items-center gap-2">
           <DollarSign className="h-6 w-6" />
           <span>Outreach</span>
-        </h1>
+        </h1> */}
         <div className="flex items-center ml-auto">
           <Button
             size="lg"

@@ -1,5 +1,5 @@
 import { OutreachType } from "@/lib/types/common";
-import { MapPinIcon, PhoneIcon, MailIcon } from "lucide-react";
+import { PhoneIcon, MailIcon } from "lucide-react";
 
 export default function Footer({ data }: { data: OutreachType }) {
   return (

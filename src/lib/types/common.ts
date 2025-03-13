@@ -22,5 +22,7 @@ export interface BankType extends z.infer<typeof BankSchema> {
 }
 export interface OutreachType extends z.infer<typeof OutreachSchema> {
   id: string;
+  address?: string;
+  dateTime?: string;
   createdAt?: string;
 }

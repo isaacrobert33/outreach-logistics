@@ -28,7 +28,7 @@ export default function HeroSection({ data }: { data: OutreachType }) {
             </div>
             <div className="flex items-center">
               <MapPinIcon className="mr-2 h-5 w-5" />
-              <span>Student Missionary Group</span>
+              <span>{data?.address}</span>
             </div>
             {/* <div className="flex items-center">
               <Clock10Icon className="mr-2 h-5 w-5" />

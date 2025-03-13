@@ -381,7 +381,7 @@ export const OutreachRegisterForm = ({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] bg-gray-950">
           <DialogHeader className="border-b border-gray-500/30 py-2">
             <DialogTitle>Register For Outreach</DialogTitle>
             <DialogDescription>Step {step} of 3</DialogDescription>
@@ -391,7 +391,7 @@ export const OutreachRegisterForm = ({
               </DialogDescription>
             )}
           </DialogHeader>
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode={"sync"}>
             <motion.div
               key="step1"
               initial={{ opacity: 0, x: -100 }}
@@ -445,7 +445,6 @@ export const OutreachRegisterForm = ({
                   <div className="col-span-3">
                     <Input
                       id="new-email"
-                      type="email"
                       {...register("email")}
                       className={errors?.email ? "border-red-500" : ""}
                     />
@@ -466,7 +465,7 @@ export const OutreachRegisterForm = ({
               className={`${step === 2 ? "" : "hidden"}`}
             >
               <div className="flex flex-col gap-8 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
+                <div className="flex flex-col gap-4 max-w-2/4">
                   <Label htmlFor="new-amount" className="text-right">
                     Paid Amount
                   </Label>
