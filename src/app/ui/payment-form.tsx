@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { CldImage } from "next-cloudinary";
 import {
   Dialog,
   DialogContent,
@@ -35,6 +36,8 @@ import CrewSelect from "@/components/crews-select";
 import { copyToClipboard } from "@/lib/utils";
 import { CopyIcon } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 export const CreatePaymentForm = ({
   open,
@@ -98,7 +101,7 @@ export const CreatePaymentForm = ({
               Enter the details for the new payment.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col gap-4 py-4">
+          <div className="flex flex-col gap-4 py-4 max-h-[70vh] overflow-y-auto">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="new-name" className="text-right">
                 Name
@@ -320,11 +323,20 @@ export const OutreachRegisterForm = ({
     },
   });
 
+  const handleRegistrationDone = () => {
+    toast("Success", {
+      description: "Thank you for registering! God bless you.",
+    });
+    onClose();
+    setStep(1);
+    reset({});
+  };
+
   const onSubmit: SubmitHandler<z.infer<typeof PaymentSchema>> = (data) => {
     createMutation.mutate(data);
   };
 
-  const handleFileUpload = (file: ExtFile[]) => {
+  const handleFileUpload = (results: ExtFile[]) => {
     setProof(true);
   };
 
@@ -592,8 +604,8 @@ export const OutreachRegisterForm = ({
                   : "I've made the transfer"}
               </Button>
             ) : (
-              <Button onClick={onClose} disabled={!proof}>
-                Done!
+              <Button onClick={handleRegistrationDone} disabled={!proof}>
+                Done
               </Button>
             )}
           </DialogFooter>
@@ -676,7 +688,7 @@ export const UpdatePaymentForm = ({
             </DialogDescription>
           </DialogHeader>
           {payment && (
-            <div className="flex flex-col gap-4 py-4">
+            <div className="flex flex-col gap-4 py-4 max-h-[70vh] overflow-y-auto">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="payment-id" className="text-right">
                   ID
@@ -870,6 +882,23 @@ export const UpdatePaymentForm = ({
                     </Select>
                   )}
                 />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <p>Proof of Payment</p>
+                {payment.proof_image ? (
+                  <Zoom>
+                    <CldImage
+                      width="360"
+                      height="200"
+                      src={payment.proof_image}
+                      sizes="100vw"
+                      alt={`${payment.name}'s Proof of Payment`}
+                    />
+                  </Zoom>
+                ) : (
+                  <span className="italic text-gray-500">No uploads...</span>
+                )}
               </div>
             </div>
           )}
