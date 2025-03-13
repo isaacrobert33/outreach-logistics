@@ -44,7 +44,9 @@ export default function LandingPage() {
       return response;
     },
   });
-  const firstBank = banksQ?.data?.data?.data[0];
+  const firstBank = banksQ?.data?.data?.data
+    ? banksQ?.data?.data?.data[0]
+    : null;
 
   // Initialize AOS
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function LandingPage() {
     });
   }, []);
 
-  return isLoading ? (
+  return isLoading || banksQ?.isLoading ? (
     <div className="flex flex-col gap-9 items-center justify-center w-full min-h-screen p-8">
       <Loader2 className="mr-2 h-6 w-6 animate-spin" />
       Fetching Outreach information, please wait...
