@@ -44,7 +44,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950">
       {/* Navigation */}
       <header className="sticky top-0 z-40 w-full border-b bg-white/80 backdrop-blur-sm dark:border-gray-800 dark:bg-gray-950/80">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-6">
+        <div className="flex h-16 items-center justify-between px-4 md:px-6 w-full">
           <Link href="/" className="flex items-center gap-2">
             <Heart className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold">{data?.data?.data?.theme}</span>
