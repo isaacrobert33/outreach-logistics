@@ -71,6 +71,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.67.1
         version: 5.67.1(react@19.0.0)
+      '@types/aos':
+        specifier: ^3.0.7
+        version: 3.0.7
       '@types/formidable':
         specifier: ^3.4.5
         version: 3.4.5
@@ -1156,6 +1159,9 @@ packages:
     resolution: {integrity: sha512-fH5u4JLwB6A+wLFdi8wWBWAYoJV5deYif2OveJ26ktAWjU499uvVFS1wPWnyEyq5LvZX1MZInvv9QRaIZANRaQ==}
     peerDependencies:
       react: ^18 || ^19
+
+  '@types/aos@3.0.7':
+    resolution: {integrity: sha512-sEhyFqvKauUJZDbvAB3Pggynrq6g+2PS4XB3tmUr+mDL1gfDJnwslUC4QQ7/l8UD+LWpr3RxZVR/rHoZrLqZVg==}
 
   '@types/bcrypt@5.0.2':
     resolution: {integrity: sha512-6atioO8Y75fNcbmj0G7UjI9lXN2pQ/IGJ2FWT4a/btd0Lk9lQalHLKhkgKVZ3r+spnmWUKfbMi1GEe9wyHQfNQ==}
@@ -2963,6 +2969,8 @@ snapshots:
     dependencies:
       '@tanstack/query-core': 5.67.1
       react: 19.0.0
+
+  '@types/aos@3.0.7': {}
 
   '@types/bcrypt@5.0.2':
     dependencies:
