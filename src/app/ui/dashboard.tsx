@@ -175,7 +175,9 @@ export default function Dashboard() {
               <a
                 href={`/api/v1/payments/excel?q=${searchQuery || "*"}&status=${
                   statusFilter ?? "*"
-                }&outreach=${outreachFilter || "*"}`}
+                }&outreach=${outreachFilter || "*"}&gender=${
+                  genderFilter || "*"
+                }`}
                 download={"outreach-payments.xlsx"}
               >
                 <Download className="h-4 w-4 sm:mr-2" />

@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
   const query = searchParams.get("q") || "*";
   const status = searchParams.get("status") || "*";
   const outreach = searchParams.get("outreach") || "*";
+  const gender = searchParams.get("gender") || "*";
 
   const filters: { [key: string]: any } = { OR: [] };
 
@@ -16,12 +17,17 @@ export async function GET(req: NextRequest) {
   } else {
     delete filters["OR"];
   }
+
   if (status != "*") {
     filters["paymentStatus"] = { equals: status };
   }
 
   if (outreach != "*") {
     filters["outreachId"] = { equals: outreach };
+  }
+
+  if (gender != "*") {
+    filters["gender"] = { equals: gender };
   }
 
   try {
@@ -34,6 +40,7 @@ export async function GET(req: NextRequest) {
         email: true,
         phone: true,
         crew: true,
+        gender: true,
         paymentStatus: true,
         paidAmount: true,
         createdAt: true,
