@@ -27,10 +27,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  ArrowUpDown,
-  CircleXIcon,
-  Cross,
-  DollarSign,
   Download,
   Pencil,
   PlusIcon,
@@ -363,6 +359,7 @@ export default function Dashboard() {
                   <TableRow>
                     <TableHead className="w-[100px]">ID</TableHead>
                     <TableHead>Name</TableHead>
+                    <TableHead>Gender</TableHead>
                     <TableHead>Phone</TableHead>
                     <TableHead>Crew</TableHead>
                     <TableHead>
@@ -401,6 +398,9 @@ export default function Dashboard() {
                               {payment.email}
                             </div>
                           </div>
+                        </TableCell>
+                        <TableCell className="capitalize">
+                          {payment.gender?.toLowerCase()}
                         </TableCell>
                         <TableCell className="capitalize">
                           {payment.phone}

@@ -14,6 +14,7 @@ export async function PATCH(req: NextRequest) {
     outreachId,
     bankId,
     paidAmount,
+    gender,
   } = await req.json();
 
   if (!id) {
@@ -32,6 +33,7 @@ export async function PATCH(req: NextRequest) {
         outreachId,
         bankId,
         paidAmount,
+        gender,
       },
     });
 
