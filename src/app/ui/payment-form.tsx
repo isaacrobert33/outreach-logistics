@@ -155,6 +155,32 @@ export const CreatePaymentForm = ({
               </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="new-gender" className="text-left">
+                Gender
+              </Label>
+              <Controller
+                name="gender"
+                control={control}
+                defaultValue="UNSPECIFIED"
+                rules={{ required: "Gender is required" }}
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={(value) => field.onChange(value)}
+                  >
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="MALE">Male</SelectItem>
+                      <SelectItem value="FEMALE">Female</SelectItem>
+                      <SelectItem value="UNSPECIFIED">Select Gender</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="new-amount" className="text-left">
                 Amount
               </Label>
@@ -174,6 +200,7 @@ export const CreatePaymentForm = ({
               </div>
             </div>
             <CrewSelect control={control} />
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="new-status" className="text-left">
                 Status
@@ -465,6 +492,34 @@ export const OutreachRegisterForm = ({
                       </p>
                     )}
                   </div>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="new-gender" className="text-left">
+                    Gender
+                  </Label>
+                  <Controller
+                    name="gender"
+                    control={control}
+                    defaultValue="UNSPECIFIED"
+                    rules={{ required: "Gender is required" }}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value}
+                        onValueChange={(value) => field.onChange(value)}
+                      >
+                        <SelectTrigger className="col-span-3">
+                          <SelectValue placeholder="Select gender" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="MALE">Male</SelectItem>
+                          <SelectItem value="FEMALE">Female</SelectItem>
+                          <SelectItem value="UNSPECIFIED">
+                            Select Gender
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                 </div>
               </div>
             </motion.div>
@@ -765,6 +820,34 @@ export const UpdatePaymentForm = ({
                     </p>
                   )}
                 </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="update-gender" className="text-left">
+                  Gender
+                </Label>
+                <Controller
+                  name="gender"
+                  control={control}
+                  defaultValue="UNSPECIFIED"
+                  rules={{ required: "Gender is required" }}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => field.onChange(value)}
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Select Gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="MALE">Male</SelectItem>
+                        <SelectItem value="FEMALE">Female</SelectItem>
+                        <SelectItem value="UNSPECIFIED">
+                          Select Gender
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="update-amount" className="text-left">

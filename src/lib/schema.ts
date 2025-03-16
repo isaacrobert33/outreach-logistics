@@ -1,10 +1,12 @@
 import { date, z } from "zod";
 
 export const PaymentStatus = z.enum(["NOT_PAID", "PENDING", "PAID"]);
+export const GenderSchema = z.enum(["UNSPECIFIED", "MALE", "FEMALE"]);
 
 export const PaymentSchema = z.object({
   name: z.string().optional(),
   paymentStatus: PaymentStatus.optional(),
+  gender: GenderSchema.optional(),
   crew: z.string().optional(),
   email: z.string().nullable().optional(),
   phone: z.string().min(10).optional().nullable(),

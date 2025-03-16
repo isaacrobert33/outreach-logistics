@@ -26,6 +26,12 @@ enum PaymentStatus {
   PAID
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  UNSPECIFIED
+}
+
 model Outreach {
   id          String    @id @default(cuid())
   theme       String
@@ -53,6 +59,7 @@ model Payment {
   id            String        @id @default(cuid())
   name          String?
   paymentStatus PaymentStatus @default(NOT_PAID)
+  gender        Gender        @default(UNSPECIFIED)
   crew          String?       @default("nocrew")
   email         String?      
   phone         String?       

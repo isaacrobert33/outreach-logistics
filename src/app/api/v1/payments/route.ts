@@ -2,7 +2,6 @@ import { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { formatNumber, Response } from "@/lib/utils";
 import { PaymentSchema } from "@/lib/schema";
-import { ZodError } from "zod";
 
 export const GET = async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
@@ -10,6 +9,7 @@ export const GET = async (req: NextRequest) => {
   const status = searchParams.get("status") || "*";
   const outreach = searchParams.get("outreach") || "*";
   const bank = searchParams.get("bank") || "*";
+  const gender = searchParams.get("gender") || "*";
 
   const filters: { [key: string]: any } = { OR: [] };
 
@@ -29,6 +29,10 @@ export const GET = async (req: NextRequest) => {
 
   if (bank != "*") {
     filters["bankId"] = { equals: bank };
+  }
+
+  if (gender != "*") {
+    filters["gender"] = { equals: gender };
   }
 
   const payments = await prisma.payment.findMany({

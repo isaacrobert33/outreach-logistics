@@ -52,6 +52,7 @@ export default function Dashboard() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("*");
+  const [genderFilter, setGenderFilter] = useState("*");
   const [outreachFilter, setOutreachFilter] = useState("*");
   const [bankFilter, setBankFilter] = useState("*");
   const [selectedPayment, setSelectedPayment] = useState<PaymentType | null>(
@@ -66,12 +67,15 @@ export default function Dashboard() {
       searchQuery,
       bankFilter,
       outreachFilter,
+      genderFilter,
     ],
     queryFn: async () => {
       const response = await fetch(
         `/api/v1/payments?q=${searchQuery || "*"}&status=${
           statusFilter ?? "*"
-        }&outreach=${outreachFilter || "*"}&bank=${bankFilter || "*"}`
+        }&outreach=${outreachFilter || "*"}&bank=${bankFilter || "*"}&gender=${
+          genderFilter || "*"
+        }`
       );
       return response.json();
     },
@@ -277,6 +281,23 @@ export default function Dashboard() {
                     <XIcon className="w-5 h-5" />
                   </Button>
                 )}
+              </div>
+
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Select
+                  value={genderFilter}
+                  onValueChange={(value) => setGenderFilter(value)}
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="*">All Gender</SelectItem>
+                    <SelectItem value="MALE">Male</SelectItem>
+                    <SelectItem value="FEMALE">Female</SelectItem>
+                    <SelectItem value="UNSPECIFIED">Not Specified</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Status filter */}
