@@ -40,7 +40,7 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { getStatusBadge } from "./dashboard";
 import { Badge } from "@/components/ui/badge";
-import { useBanks } from "@/lib/hooks";
+import { useBanks, useOutreachList } from "@/lib/hooks";
 
 const units = [
   "Bible Study",
@@ -76,13 +76,7 @@ export const CreatePaymentForm = ({
       paidAmount: 0.0,
     },
   });
-  const outreachQ = useQuery({
-    queryKey: ["outreach"],
-    queryFn: async () => {
-      const response = await fetch(`/api/v1/outreach`);
-      return response.json();
-    },
-  });
+  const outreachQ = useOutreachList();
 
   const banksQ = useBanks();
 
@@ -830,13 +824,8 @@ export const UpdatePaymentForm = ({
   });
   const paidAmountState = useWatch({ control, name: "paidAmount" });
   const pendingAmountState = useWatch({ control, name: "pendingAmount" });
-  const outreachQ = useQuery({
-    queryKey: ["outreach"],
-    queryFn: async () => {
-      const response = await fetch(`/api/v1/outreach`);
-      return response.json();
-    },
-  });
+  const outreachQ = useOutreachList();
+
   const banksQ = useBanks();
 
   const updateMutation = useMutation({
@@ -871,10 +860,16 @@ export const UpdatePaymentForm = ({
     }
   }, [payment]);
 
+  useEffect(() => {
+    if ((paidAmountState ?? 0) >= (payment?.outreach?.fee ?? 0)) {
+      setValue("paymentStatus", "PAID");
+    }
+  }, [paidAmountState]);
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent className="sm:min-w-[300px] sm:max-w-[40%]">
+        <DialogContent className="sm:min-w-[300px] sm:max-w-[80%] md:max-w-[40%]">
           <DialogHeader>
             <DialogTitle>Update Payment</DialogTitle>
             <DialogDescription>

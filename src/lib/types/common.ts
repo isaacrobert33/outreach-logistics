@@ -10,7 +10,7 @@ export interface ResponseProps {
 
 export interface PaymentType extends z.infer<typeof PaymentSchema> {
   id: string;
-  outreach?: string;
+  outreach?: OutreachType;
   createdAt?: string;
   bank?: string;
   proof_image?: string[];
