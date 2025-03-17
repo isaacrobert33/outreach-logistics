@@ -17,6 +17,7 @@ import {
   SquareUserIcon,
   ListPlusIcon,
   Info,
+  PlusIcon,
 } from "lucide-react";
 import {
   SiFacebook,
@@ -28,10 +29,11 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { BankType, OutreachType } from "@/lib/types/common";
-import { OutreachRegisterForm } from "./payment-form";
+import { OutreachRegisterForm, PaymentTopupForm } from "./payment-form";
 
 export default function LandingPage() {
   const [registerDialog, setRegisterDialog] = useState<boolean>(false);
+  const [topupDialog, setTopupDialog] = useState<boolean>(false);
   const [bank, setBank] = useState<BankType | null>(null);
   const { data, isLoading } = useQuery({
     queryKey: ["latestOutreach"],
@@ -167,18 +169,19 @@ export default function LandingPage() {
                   Learn More
                 </Button> */}
               </div>
-              <p className="flex flex-row gap-2 items-center flex-wrap mt-8 text-gray-500 dark:text-gray-400 text-sm">
-                <Info className="w-4" />
-                If you have an existing payment record, click below to top-up or
-                complete your payment.
-              </p>
+              <div className="flex flex-row gap-3 items-start sm:items-center mt-12 text-gray-500 dark:text-gray-400 text-sm">
+                <Info className="w-8 h-8 sm:w-4 sm:h-4" />
+                Or if you have an existing payment record, click below to top-up
+                or complete your payment.
+              </div>
 
               <Button
-                className="hidden mt-4 md:flex bg-green-600 hover:bg-green-500"
+                className="mt-4 md:flex bg-green-600 hover:bg-green-500"
                 onClick={() => setRegisterDialog(true)}
+                size={"lg"}
               >
                 Top-Up Now
-                <ListPlusIcon className="ml-2 h-4 w-4" />
+                <PlusIcon className="ml-2 h-4 w-4" />
               </Button>
             </div>
             <div
@@ -472,6 +475,13 @@ export default function LandingPage() {
         <OutreachRegisterForm
           open={registerDialog}
           onClose={() => setRegisterDialog(false)}
+          outreachId={data?.data?.data?.id}
+        />
+      )}
+      {data?.data?.data && (
+        <PaymentTopupForm
+          open={registerDialog}
+          onClose={() => setTopupDialog(false)}
           outreachId={data?.data?.data?.id}
         />
       )}

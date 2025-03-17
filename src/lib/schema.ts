@@ -12,7 +12,24 @@ export const PaymentSchema = z.object({
   phone: z.string().min(10).optional().nullable(),
   paidAmount: z
     .number()
-    .or(z.string().transform((arg) => parseFloat(arg)))
+    .min(500)
+    .or(
+      z
+        .string()
+        .min(3)
+        .transform((arg) => parseFloat(arg))
+    )
+    .optional(),
+
+  pendingAmount: z
+    .number()
+    .min(500)
+    .or(
+      z
+        .string()
+        .min(3)
+        .transform((arg) => parseFloat(arg))
+    )
     .optional(),
   createdAt: z.string().optional(),
   outreachId: z.string().optional(),

@@ -24,6 +24,9 @@ export const GET = async (req: NextRequest) => {
       bank: true,
     },
   });
+
+  if (!payment) return Response({ status: 404, message: "Payment not found." });
+
   const serializedPayment = {
     ...payment,
     outreach: payment?.outreach?.theme,

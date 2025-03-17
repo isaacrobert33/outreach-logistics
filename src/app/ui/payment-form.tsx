@@ -34,10 +34,11 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { ExtFile } from "@files-ui/react";
 import CrewSelect from "@/components/crews-select";
 import { copyToClipboard } from "@/lib/utils";
-import { CopyIcon } from "lucide-react";
+import { CopyIcon, Loader2 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import { getStatusBadge } from "./dashboard";
 
 const units = [
   "Bible Study",
@@ -403,7 +404,7 @@ export const OutreachRegisterForm = ({
   } = useForm({
     resolver: zodResolver(PaymentSchema),
     defaultValues: {
-      paidAmount: 0.0,
+      paidAmount: 500.0,
       name: "",
       email: "",
       phone: "",
@@ -639,7 +640,7 @@ export const OutreachRegisterForm = ({
               <div className="flex flex-col gap-8 py-4">
                 <div className="flex flex-col gap-4 max-w-2/4">
                   <Label htmlFor="new-amount" className="text-left">
-                    Paid Amount
+                    Paid Amount (A minimum of NGN500)
                   </Label>
                   <div className="col-span-3">
                     <Input
@@ -1160,11 +1161,13 @@ export const PaymentTopupForm = ({
   const [copyText, setCopyText] = useState("Copy");
 
   const [proof, setProof] = useState<boolean>(false);
+  const [notFound, setNotFound] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pendingRegistration, setPendingRegistration] =
     useState<boolean>(false);
   const [payment, setPayment] = useState<PaymentType | null>(null);
   const [query, setQuery] = useState<string>("");
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<number>(500);
 
   const banksQ = useQuery({
     queryKey: ["banks"],
@@ -1180,20 +1183,34 @@ export const PaymentTopupForm = ({
     mutationFn: (newPayment: any) =>
       axios.patch(`/api/v1/payments/update?id=${payment?.id}`, newPayment),
     onSuccess: () => {
-      onClose();
+      setStep(3);
       toast("Success", {
         description: "Payment updated successfully.",
         className: "dark",
       });
     },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toast("Error", { description: error?.response?.data?.message });
+    },
   });
 
   const onSubmit = () => {
-    updateMutation.mutate({ paidAmount: amount });
+    updateMutation.mutate({ pendingAmount: amount });
   };
 
   const fetchPayment = async () => {
-    const response = await axios.get(``);
+    setIsLoading(true);
+    setNotFound(false);
+    try {
+      const response = await axios.get(
+        `/api/v1/payments/search?q=${query}&outreachId=${outreachId}`
+      );
+      setPayment(response.data?.data);
+      setIsLoading(false);
+    } catch (error) {
+      setNotFound(true);
+      setIsLoading(false);
+    }
   };
 
   const handleFileUpload = (results: ExtFile[]) => {
@@ -1232,22 +1249,183 @@ export const PaymentTopupForm = ({
               className={`${step === 1 ? "" : "hidden"}`}
             >
               <div className="flex flex-col gap-4 py-4">
-                <div className="flex items-center">
+                <div className="flex flex-col items-start gap-4">
                   <Label htmlFor="query" className="text-left">
                     Enter your Phone number or Email address{" "}
                     <span className="text-red-500">*</span>
                   </Label>
-                  <div className="col-span-3">
-                    <Input
-                      id="query"
-                      onChange={(e) => setQuery(e.target.value)}
-                      value={query}
-                      required
-                    />
-                  </div>
-                  <Button onClick={fetchPayment}>Get Profile</Button>
+                  <Input
+                    id="query"
+                    onChange={(e) => setQuery(e.target.value)}
+                    value={query}
+                    placeholder="johndoe@gmail.com"
+                    className="max-w-[60%]"
+                    required
+                  />
+                  <Button onClick={fetchPayment} disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Fetching...
+                      </>
+                    ) : (
+                      "Get Previous Payment"
+                    )}
+                  </Button>
+                  {payment && (
+                    <div className="flex flex-col gap-4 bg-gray-300/10 p-2 rounded-md border-1 border-gray-500 w-full">
+                      <div className="flex flex-col gap-2 min-w-32">
+                        <p
+                          className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                        >
+                          Name
+                        </p>
+                        <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                          {payment?.name}
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2 min-w-32">
+                        <p
+                          className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                        >
+                          Payment Status
+                        </p>
+                        <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                          {getStatusBadge(payment?.paymentStatus)}
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2 min-w-32">
+                        <p
+                          className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                        >
+                          Paid Amount
+                        </p>
+                        <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                          NGN{payment?.paidAmount}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {notFound && (
+                    <p className="italic text-gray-500">
+                      Sorry, we couldn't find your payment. Confirm your email
+                      or phone number and try again
+                    </p>
+                  )}
                 </div>
               </div>
+            </motion.div>
+            <motion.div
+              key="step2"
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              className={`${step === 2 ? "" : "hidden"}`}
+            >
+              <div className="flex flex-col gap-8 py-4">
+                <div className="flex flex-col gap-4 max-w-2/4">
+                  <Label htmlFor="new-amount" className="text-left">
+                    Paid Amount (A minimum of NGN500)
+                  </Label>
+                  <Input
+                    type="number"
+                    step="100"
+                    value={amount}
+                    placeholder="500"
+                    className="max-w-[60%]"
+                    onChange={(e) => setAmount(parseFloat(e.target?.value))}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-4 w-full">
+                  <Label className="text-left">
+                    Payment{" "}
+                    {banksQ?.data?.data?.length > 1 ? "Options" : "Details"}
+                  </Label>
+                  {banksQ?.data?.data?.length &&
+                    banksQ?.data?.data?.map((item: BankType, index: number) => (
+                      <div
+                        key={`bank-${index}`}
+                        className="flex flex-row gap-8 items-center"
+                      >
+                        {banksQ?.data?.data?.length > 1 && (
+                          <RadioGroupItem value={item.id} id={item.id} />
+                        )}
+                        <div className="flex flex-col gap-4 bg-gray-300/10 p-2 rounded-md border-1 border-gray-500 w-full">
+                          <div className="flex flex-col gap-2 min-w-32">
+                            <p
+                              className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                            >
+                              Bank Name
+                            </p>
+                            <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                              {item.bank}
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-2 min-w-32">
+                            <p
+                              className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                            >
+                              Account No.
+                            </p>
+                            <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                              <div className="flex flex-row items-center gap-12">
+                                {/* <Input
+                                      defaultValue={}
+                                      readOnly
+                                    /> */}
+                                <span className="font-bold text-lg">
+                                  {item.acctNo}
+                                </span>
+                                <Button
+                                  onClick={() =>
+                                    copyToClipboard(
+                                      item.acctNo,
+                                      handleCopySuccess
+                                    )
+                                  }
+                                  size="sm"
+                                  className="px-3"
+                                >
+                                  <span className="sr-only">{copyText}</span>
+                                  <CopyIcon />
+                                  {copyText}
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-2 min-w-32">
+                            <p
+                              className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                            >
+                              Account Name
+                            </p>
+                            <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                              {item?.name}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </motion.div>
+            <motion.div
+              key="step3"
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              className={`flex flex-col gap-4 ${step === 3 ? "" : "hidden"}`}
+            >
+              {payment && (
+                <>
+                  <Label>Kindly Upload Proof of Payment</Label>
+                  <FileUpload
+                    uploadUrl={`/api/v1/payments/proof?id=${payment?.id}`}
+                    onUploadFinish={handleFileUpload}
+                  />
+                </>
+              )}
             </motion.div>
           </AnimatePresence>
           <DialogFooter>
@@ -1256,17 +1434,28 @@ export const PaymentTopupForm = ({
                 Back
               </Button>
             )}
-            {step == 2 ? (
+            {step == 1 && (
+              <Button disabled={!payment} onClick={() => setStep(2)}>
+                Next
+              </Button>
+            )}
+            {step == 2 && (
               <Button
                 type="submit"
                 onClick={onSubmit}
-                disabled={updateMutation.isPending}
+                disabled={updateMutation.isPending || amount < 500}
               >
-                {updateMutation.isPending
-                  ? "Submitting..."
-                  : "I've made the transfer"}
+                {updateMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  "I've made the transfer"
+                )}
               </Button>
-            ) : (
+            )}
+            {step == 3 && (
               <Button onClick={handleRegistrationDone} disabled={!proof}>
                 Done
               </Button>

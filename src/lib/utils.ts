@@ -33,7 +33,7 @@ export const Response = (body: {
     body.message = body.message ? body.message : ALL_SUCCESS_CODES[body.status];
     body.success = true;
   } else if (body.status in ALL_ERROR_CODES) {
-    body.message = ALL_ERROR_CODES[body.status];
+    body.message = body.message ? body.message : ALL_ERROR_CODES[body.status];
     body.success = false;
   }
   return NextResponse.json(body, { status: body.status });

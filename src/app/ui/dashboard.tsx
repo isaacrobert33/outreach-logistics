@@ -43,6 +43,17 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import AccountMenu from "./account-menu";
 
+export const getStatusBadge = (status?: PaymentStatus) => {
+  switch (status) {
+    case "PAID":
+      return <Badge className="bg-green-500">Paid</Badge>;
+    case "PENDING":
+      return <Badge className="bg-yellow-500">Pending</Badge>;
+    default:
+      return <Badge className="bg-red-500">Not Approved</Badge>;
+  }
+};
+
 export default function Dashboard() {
   const session = useSession();
   const router = useRouter();
@@ -135,19 +146,6 @@ export default function Dashboard() {
     );
     if (!confirm) return;
     deleteMutation.mutate(id);
-  };
-
-  const getStatusBadge = (status: PaymentStatus) => {
-    switch (status) {
-      case "PAID":
-        return <Badge className="bg-green-500">Paid</Badge>;
-      case "PENDING":
-        return <Badge className="bg-yellow-500">Pending</Badge>;
-      case "NOT_PAID":
-        return <Badge className="bg-red-500">Not Paid</Badge>;
-      default:
-        return <Badge>{status}</Badge>;
-    }
   };
 
   useEffect(() => {
