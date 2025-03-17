@@ -45,7 +45,6 @@ export const GET = async (req: NextRequest) => {
   });
   const serializedPayments = payments.map((item) => ({
     ...item,
-    outreach: item.outreach?.theme,
     bank: item?.bank ? `${item.bank?.name} - ${item.bank.bank}` : "",
   }));
   return Response({

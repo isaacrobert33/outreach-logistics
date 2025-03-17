@@ -433,7 +433,7 @@ export default function Dashboard() {
                         <TableCell>
                           {getStatusBadge(payment.paymentStatus || "NOT_PAID")}
                         </TableCell>
-                        <TableCell>{payment.outreach}</TableCell>
+                        <TableCell>{payment.outreach?.theme}</TableCell>
                         <TableCell className="text-right">
                           <Button
                             variant="ghost"
