@@ -39,6 +39,20 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
+const units = [
+  "Bible Study",
+  "Choir",
+  "Drama",
+  "Library",
+  "Organising",
+  "Prayer",
+  "Publicity",
+  "President",
+  "Ushering",
+];
+
+const levels = ["100", "200", "300", "400", "500"];
+
 export const CreatePaymentForm = ({
   open,
   onClose,
@@ -175,6 +189,67 @@ export const CreatePaymentForm = ({
                       <SelectItem value="MALE">Male</SelectItem>
                       <SelectItem value="FEMALE">Female</SelectItem>
                       <SelectItem value="UNSPECIFIED">Select Gender</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="new-unit" className="text-left">
+                Unit (Kindly choose President if it's a non worker)
+              </Label>
+              <Controller
+                name="unit"
+                control={control}
+                defaultValue="president"
+                render={({ field }) => (
+                  <Select
+                    value={field.value || undefined}
+                    onValueChange={(value) => field.onChange(value)}
+                  >
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select unit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {units?.map((unit, index) => (
+                        <SelectItem
+                          key={unit}
+                          className="capitalize"
+                          value={unit}
+                        >
+                          {unit}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="new-level" className="text-left">
+                Level
+              </Label>
+              <Controller
+                name="level"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value || undefined}
+                    onValueChange={(value) => field.onChange(value)}
+                  >
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {levels?.map((level, index) => (
+                        <SelectItem
+                          key={level}
+                          className="capitalize"
+                          value={level}
+                        >
+                          {level}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 )}
@@ -521,6 +596,37 @@ export const OutreachRegisterForm = ({
                     )}
                   />
                 </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="new-unit" className="text-left">
+                    Unit (Kindly choose President if you are a non worker)
+                  </Label>
+                  <Controller
+                    name="unit"
+                    control={control}
+                    defaultValue="president"
+                    render={({ field }) => (
+                      <Select
+                        value={field.value || undefined}
+                        onValueChange={(value) => field.onChange(value)}
+                      >
+                        <SelectTrigger className="col-span-3">
+                          <SelectValue placeholder="Select unit" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {units?.map((unit, index) => (
+                            <SelectItem
+                              key={unit}
+                              className="capitalize"
+                              value={unit}
+                            >
+                              {unit}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
               </div>
             </motion.div>
             <motion.div
@@ -721,13 +827,7 @@ export const UpdatePaymentForm = ({
   });
   const updateMutation = useMutation({
     mutationFn: (newPayment: any) =>
-      fetch(`/api/v1/payments/update?id=${payment.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newPayment),
-      }),
+      axios.patch(`/api/v1/payments/update?id=${payment.id}`, newPayment),
     onSuccess: () => {
       onClose();
       toast("Success", {
@@ -844,6 +944,37 @@ export const UpdatePaymentForm = ({
                         <SelectItem value="UNSPECIFIED">
                           Select Gender
                         </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="new-unit" className="text-left">
+                  Unit (Kindly choose President if it's a non worker)
+                </Label>
+                <Controller
+                  name="unit"
+                  control={control}
+                  defaultValue="president"
+                  render={({ field }) => (
+                    <Select
+                      value={field.value || undefined}
+                      onValueChange={(value) => field.onChange(value)}
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Select unit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {units?.map((unit, index) => (
+                          <SelectItem
+                            key={unit}
+                            className="capitalize"
+                            value={unit}
+                          >
+                            {unit}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   )}
@@ -1009,6 +1140,137 @@ export const UpdatePaymentForm = ({
             >
               {updateMutation.isPending ? "Saving..." : "Save Changes"}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </form>
+    </Dialog>
+  );
+};
+
+export const PaymentTopupForm = ({
+  open,
+  onClose,
+  outreachId,
+}: {
+  open: boolean;
+  onClose: () => void;
+  outreachId: string;
+}) => {
+  const [step, setStep] = useState<number>(1);
+  const [copyText, setCopyText] = useState("Copy");
+
+  const [proof, setProof] = useState<boolean>(false);
+  const [pendingRegistration, setPendingRegistration] =
+    useState<boolean>(false);
+  const [payment, setPayment] = useState<PaymentType | null>(null);
+  const [query, setQuery] = useState<string>("");
+  const [amount, setAmount] = useState<number>(0);
+
+  const banksQ = useQuery({
+    queryKey: ["banks"],
+    queryFn: async () => (await fetch(`/api/v1/banks?isPublic=true`)).json(),
+  });
+
+  const handleCopySuccess = () => {
+    setCopyText("Copied!");
+    setTimeout(() => setCopyText("Copy"), 3000);
+  };
+
+  const updateMutation = useMutation({
+    mutationFn: (newPayment: any) =>
+      axios.patch(`/api/v1/payments/update?id=${payment?.id}`, newPayment),
+    onSuccess: () => {
+      onClose();
+      toast("Success", {
+        description: "Payment updated successfully.",
+        className: "dark",
+      });
+    },
+  });
+
+  const onSubmit = () => {
+    updateMutation.mutate({ paidAmount: amount });
+  };
+
+  const fetchPayment = async () => {
+    const response = await axios.get(``);
+  };
+
+  const handleFileUpload = (results: ExtFile[]) => {
+    setProof(true);
+  };
+
+  const handleRegistrationDone = () => {
+    toast("Success", {
+      description: "Thank you for topping up! God bless you.",
+    });
+    onClose();
+    setStep(1);
+    setQuery("");
+    setAmount(0);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <form onSubmit={onSubmit}>
+        <DialogContent className="sm:max-w-[600px] bg-gray-950 max-h-[80vh] overflow-y-auto">
+          <DialogHeader className="border-b border-gray-500/30 py-2">
+            <DialogTitle>Register For Outreach</DialogTitle>
+            <DialogDescription>Step {step} of 3</DialogDescription>
+            {pendingRegistration && (
+              <DialogDescription>
+                You've a pending registration.
+              </DialogDescription>
+            )}
+          </DialogHeader>
+          <AnimatePresence mode={"sync"}>
+            <motion.div
+              key="step1"
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              className={`${step === 1 ? "" : "hidden"}`}
+            >
+              <div className="flex flex-col gap-4 py-4">
+                <div className="flex items-center">
+                  <Label htmlFor="query" className="text-left">
+                    Enter your Phone number or Email address{" "}
+                    <span className="text-red-500">*</span>
+                  </Label>
+                  <div className="col-span-3">
+                    <Input
+                      id="query"
+                      onChange={(e) => setQuery(e.target.value)}
+                      value={query}
+                      required
+                    />
+                  </div>
+                  <Button onClick={fetchPayment}>Get Profile</Button>
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+          <DialogFooter>
+            {step > 1 && (
+              <Button variant="outline" onClick={() => setStep(step - 1)}>
+                Back
+              </Button>
+            )}
+            {step == 2 ? (
+              <Button
+                type="submit"
+                onClick={onSubmit}
+                disabled={updateMutation.isPending}
+              >
+                {updateMutation.isPending
+                  ? "Submitting..."
+                  : "I've made the transfer"}
+              </Button>
+            ) : (
+              <Button onClick={handleRegistrationDone} disabled={!proof}>
+                Done
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </form>

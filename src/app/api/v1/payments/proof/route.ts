@@ -48,7 +48,9 @@ export async function POST(req: NextRequest) {
     await prisma.payment.update({
       where: { id },
       data: {
-        proof_image: result.public_id,
+        proof_image: {
+          push: result.public_id,
+        },
       },
     });
 

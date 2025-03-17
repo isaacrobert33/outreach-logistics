@@ -15,6 +15,8 @@ import {
   PinIcon,
   LandmarkIcon,
   SquareUserIcon,
+  ListPlusIcon,
+  Info,
 } from "lucide-react";
 import {
   SiFacebook,
@@ -60,8 +62,6 @@ export default function LandingPage() {
       setBank(banksQ?.data?.data?.data[0]);
     }
   }, [banksQ, setBank]);
-
-  console.log(banksQ?.data?.data?.data);
 
   return isLoading || banksQ?.isLoading ? (
     <div className="flex flex-col gap-9 items-center justify-center w-full min-h-screen p-8">
@@ -154,7 +154,7 @@ export default function LandingPage() {
                   </div>
                 </div>
               </div>
-              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:items-center">
                 <Button
                   size="lg"
                   className="font-medium"
@@ -167,6 +167,19 @@ export default function LandingPage() {
                   Learn More
                 </Button> */}
               </div>
+              <p className="flex flex-row gap-2 items-center flex-wrap mt-8 text-gray-500 dark:text-gray-400 text-sm">
+                <Info className="w-4" />
+                If you have an existing payment record, click below to top-up or
+                complete your payment.
+              </p>
+
+              <Button
+                className="hidden mt-4 md:flex bg-green-600 hover:bg-green-500"
+                onClick={() => setRegisterDialog(true)}
+              >
+                Top-Up Now
+                <ListPlusIcon className="ml-2 h-4 w-4" />
+              </Button>
             </div>
             <div
               className="mx-auto lg:mx-0 relative"

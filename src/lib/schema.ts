@@ -17,6 +17,8 @@ export const PaymentSchema = z.object({
   createdAt: z.string().optional(),
   outreachId: z.string().optional(),
   bankId: z.string().optional(),
+  level: z.string().nullable().optional(),
+  unit: z.string().optional().nullable().default("President"),
 });
 
 export const BankSchema = z.object({

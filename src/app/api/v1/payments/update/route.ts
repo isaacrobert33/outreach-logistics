@@ -1,40 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { Response } from "@/lib/utils";
+import { PaymentSchema } from "@/lib/schema";
 
 export async function PATCH(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
-  const {
-    name,
-    crew,
-    email,
-    phone,
-    paymentStatus,
-    outreachId,
-    bankId,
-    paidAmount,
-    gender,
-  } = await req.json();
+  const payload = await req.json();
 
   if (!id) {
     return Response({ message: "Invalid ID", status: 400 });
   }
 
+  const validatedData = PaymentSchema.parse(payload);
+
   try {
     const updatedPayment = await prisma.payment.update({
       where: { id },
-      data: {
-        name,
-        crew,
-        email,
-        phone,
-        paymentStatus,
-        outreachId,
-        bankId,
-        paidAmount,
-        gender,
-      },
+      data: { ...validatedData },
     });
 
     return Response({ data: updatedPayment, status: 200 });

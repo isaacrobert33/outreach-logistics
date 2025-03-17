@@ -61,10 +61,12 @@ model Payment {
   paymentStatus PaymentStatus @default(NOT_PAID)
   gender        Gender        @default(UNSPECIFIED)
   crew          String?       @default("nocrew")
+  unit          String?       @default("President")
+  level         String?      
   email         String?      
   phone         String?       
   paidAmount    Float?        @default(0.0)
-  proof_image   String?
+  proof_image   String[]
   outreachId    String?
   outreach      Outreach?     @relation(fields: [outreachId], references: [id])
   bankId        String?

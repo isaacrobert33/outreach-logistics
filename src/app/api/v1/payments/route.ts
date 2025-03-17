@@ -65,7 +65,7 @@ const generatePaymentId = async (outreachId?: string, crew?: string) => {
 export const POST = async (req: NextRequest) => {
   try {
     const body = await req.json();
-    console.log(body);
+
     const validatedBody = PaymentSchema.parse(body);
 
     const payment = await prisma.payment.create({
