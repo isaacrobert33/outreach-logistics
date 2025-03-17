@@ -15,7 +15,6 @@ import {
   PinIcon,
   LandmarkIcon,
   SquareUserIcon,
-  ListPlusIcon,
   Info,
   PlusIcon,
 } from "lucide-react";
@@ -30,6 +29,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { BankType, OutreachType } from "@/lib/types/common";
 import { OutreachRegisterForm, PaymentTopupForm } from "./payment-form";
+import { useBanks } from "@/lib/hooks";
 
 export default function LandingPage() {
   const [registerDialog, setRegisterDialog] = useState<boolean>(false);
@@ -40,15 +40,7 @@ export default function LandingPage() {
     queryFn: () => axios.get<{ data: OutreachType }>(`/api/v1/outreach/latest`),
   });
 
-  const banksQ = useQuery({
-    queryKey: ["banks"],
-    queryFn: async () => {
-      const response = await axios.get<{ data: BankType[] }>(
-        `/api/v1/banks?isPublic=true`
-      );
-      return response;
-    },
-  });
+  const banksQ = useBanks();
 
   // Initialize AOS
   useEffect(() => {
@@ -60,8 +52,8 @@ export default function LandingPage() {
   }, []);
 
   useEffect(() => {
-    if (banksQ?.data?.data?.data?.length) {
-      setBank(banksQ?.data?.data?.data[0]);
+    if (banksQ?.data?.data?.length) {
+      setBank(banksQ?.data?.data[0]);
     }
   }, [banksQ, setBank]);
 

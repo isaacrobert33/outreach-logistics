@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Error generating Excel file:", error);
+    // console.error("Error generating Excel file:", error);
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }

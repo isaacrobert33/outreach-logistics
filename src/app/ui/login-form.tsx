@@ -55,7 +55,6 @@ export function LoginForm() {
       // Redirect happens automatically through the server action
     } catch (error) {
       setError("An unexpected error occurred");
-      console.error(error);
     } finally {
       setIsLoading(false);
     }

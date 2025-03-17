@@ -47,6 +47,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import AccountMenu from "./account-menu";
 import { formatDateIso } from "@/lib/utils";
+import axios from "axios";
+import { useBanks } from "@/lib/hooks";
 
 export const getStatusBadge = (status?: PaymentStatus) => {
   switch (status) {
@@ -103,13 +105,7 @@ export default function Dashboard() {
     },
   });
 
-  const banksQ = useQuery({
-    queryKey: ["banks"],
-    queryFn: async () => {
-      const response = await fetch(`/api/v1/banks?isPublic=true`);
-      return response.json();
-    },
-  });
+  const banksQ = useBanks();
 
   const statsQuery = useQuery({
     queryKey: ["stats"],
@@ -375,6 +371,7 @@ export default function Dashboard() {
                     <TableHead>Gender</TableHead>
                     <TableHead>Phone</TableHead>
                     <TableHead>Crew</TableHead>
+                    <TableHead>Unit</TableHead>
                     <TableHead>
                       <div className="flex items-center">
                         Paid Amount
@@ -420,6 +417,9 @@ export default function Dashboard() {
                         </TableCell>
                         <TableCell className="capitalize">
                           {payment.crew}
+                        </TableCell>
+                        <TableCell className="capitalize">
+                          {payment.unit}
                         </TableCell>
                         <TableCell>
                           NGN{payment.paidAmount?.toFixed(2)}

@@ -39,7 +39,7 @@ export default function Auth() {
     // Check if there's an error from the callback
     const error = searchParams.get("error");
     if (error) {
-      console.error("Authentication error:", error);
+      // console.error("Authentication error:", error);
     }
 
     // Set active tab based on URL parameter
@@ -54,7 +54,7 @@ export default function Auth() {
       setIsLoading({ ...isLoading, [provider]: true });
       await signIn(provider, { callbackUrl: "/admin/dashboard" });
     } catch (error) {
-      console.error(`Error signing in with ${provider}:`, error);
+      // console.error(`Error signing in with ${provider}:`, error);
     } finally {
       setIsLoading({ ...isLoading, [provider]: false });
     }

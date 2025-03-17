@@ -74,7 +74,6 @@ export function SignupForm() {
       } else {
         setError("An unexpected error occurred");
       }
-      console.error(error);
     } finally {
       setIsLoading(false);
     }

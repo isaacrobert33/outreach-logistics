@@ -40,6 +40,7 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { getStatusBadge } from "./dashboard";
 import { Badge } from "@/components/ui/badge";
+import { useBanks } from "@/lib/hooks";
 
 const units = [
   "Bible Study",
@@ -83,13 +84,8 @@ export const CreatePaymentForm = ({
     },
   });
 
-  const banksQ = useQuery({
-    queryKey: ["banks"],
-    queryFn: async () => {
-      const response = await fetch(`/api/v1/banks?isPublic=true`);
-      return response.json();
-    },
-  });
+  const banksQ = useBanks();
+
   const createMutation = useMutation({
     mutationFn: (newPayment: any) =>
       fetch("/api/v1/payments", {
@@ -423,10 +419,7 @@ export const OutreachRegisterForm = ({
     },
   });
 
-  const banksQ = useQuery({
-    queryKey: ["banks"],
-    queryFn: async () => (await fetch(`/api/v1/banks?isPublic=true`)).json(),
-  });
+  const banksQ = useBanks();
 
   const handleCopySuccess = () => {
     setCopyText("Copied!");
@@ -654,8 +647,8 @@ export const OutreachRegisterForm = ({
               <div className="flex flex-col gap-8 py-4">
                 <div className="flex flex-col gap-4">
                   <Label htmlFor="new-amount" className="text-left">
-                    Amount (Fee is NGN{outreach.fee}+X, with a minimum of
-                    NGN500)
+                    Amount (Fee is NGN{outreach.fee}+X, with a installment
+                    minimum of NGN500)
                   </Label>
                   <div className="max-w-2/4">
                     <Input
@@ -677,7 +670,9 @@ export const OutreachRegisterForm = ({
                 <div className="flex flex-col gap-4 w-full">
                   <Label className="text-left">
                     Payment{" "}
-                    {banksQ?.data?.data?.length > 1 ? "Options" : "Details"}
+                    {(banksQ?.data?.data?.length ?? 0) > 1
+                      ? "Options"
+                      : "Details"}
                   </Label>
                   {banksQ?.data?.data?.length && (
                     <RadioGroup
@@ -838,13 +833,8 @@ export const UpdatePaymentForm = ({
       return response.json();
     },
   });
-  const banksQ = useQuery({
-    queryKey: ["banks"],
-    queryFn: async () => {
-      const response = await fetch(`/api/v1/banks?isPublic=true`);
-      return response.json();
-    },
-  });
+  const banksQ = useBanks();
+
   const updateMutation = useMutation({
     mutationFn: (newPayment: any) =>
       axios.patch(`/api/v1/payments/update?id=${payment.id}`, newPayment),
@@ -1033,7 +1023,7 @@ export const UpdatePaymentForm = ({
               )}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="update-amount" className="text-left">
-                  Paid Amount
+                  Paid Amount (NGN)
                 </Label>
                 <div className="col-span-3">
                   <Input
@@ -1156,7 +1146,7 @@ export const UpdatePaymentForm = ({
                         <SelectValue placeholder="Select option" />
                       </SelectTrigger>
                       <SelectContent>
-                        {banksQ?.data?.data?.map(
+                        {banksQ?.data?.data.map(
                           (item: BankType, index: number) => (
                             <SelectItem key={index} value={item.id}>
                               {item.name} - {item.bank}
@@ -1222,16 +1212,11 @@ export const PaymentTopupForm = ({
   const [proof, setProof] = useState<boolean>(false);
   const [notFound, setNotFound] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [pendingRegistration, setPendingRegistration] =
-    useState<boolean>(false);
   const [payment, setPayment] = useState<PaymentType | null>(null);
   const [query, setQuery] = useState<string>("");
   const [amount, setAmount] = useState<number>(500);
 
-  const banksQ = useQuery({
-    queryKey: ["banks"],
-    queryFn: async () => (await fetch(`/api/v1/banks?isPublic=true`)).json(),
-  });
+  const banksQ = useBanks();
 
   const handleCopySuccess = () => {
     setCopyText("Copied!");
@@ -1287,208 +1272,214 @@ export const PaymentTopupForm = ({
     setAmount(500);
   };
 
-  console.log(banksQ?.data);
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <form onSubmit={onSubmit}>
         <DialogContent className="sm:max-w-[600px] bg-gray-950 max-h-[80vh] overflow-y-auto">
           <DialogHeader className="border-b border-gray-500/30 py-2">
-            <DialogTitle>Register For Outreach</DialogTitle>
+            <DialogTitle>Payment Top-Up</DialogTitle>
             <DialogDescription>Step {step} of 3</DialogDescription>
-            {pendingRegistration && (
-              <DialogDescription>
-                You've a pending registration.
-              </DialogDescription>
-            )}
           </DialogHeader>
-          <AnimatePresence mode={"sync"}>
-            <motion.div
-              key="step1"
-              initial={{ opacity: 0, x: -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              className={`${step === 1 ? "" : "hidden"}`}
-            >
-              <div className="flex flex-col gap-4 py-4">
-                <div className="flex flex-col items-start gap-4">
-                  <Label htmlFor="query" className="text-left">
-                    Enter your Phone number or Email address{" "}
-                    <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="query"
-                    onChange={(e) => setQuery(e.target.value)}
-                    value={query}
-                    placeholder="johndoe@gmail.com"
-                    className="max-w-[60%]"
-                    required
-                  />
-                  <Button onClick={fetchPayment} disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Fetching...
-                      </>
-                    ) : (
-                      "Get Previous Payment"
-                    )}
-                  </Button>
-                  {payment && (
-                    <div className="flex flex-col gap-4 bg-gray-300/10 p-2 rounded-md border-1 border-gray-500 w-full">
-                      <div className="flex flex-col gap-2 min-w-32">
-                        <p
-                          className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                        >
-                          Name
-                        </p>
-                        <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
-                          {payment?.name}
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-2 min-w-32">
-                        <p
-                          className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                        >
-                          Payment Status
-                        </p>
-                        <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
-                          {getStatusBadge(payment?.paymentStatus)}
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-2 min-w-32">
-                        <p
-                          className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                        >
-                          Paid Amount
-                        </p>
-                        <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
-                          NGN{payment?.paidAmount}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {notFound && (
-                    <p className="italic text-gray-500">
-                      Sorry, we couldn't find your payment. Confirm your email
-                      or phone number and try again
-                    </p>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-            <motion.div
-              key="step2"
-              initial={{ opacity: 0, x: -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              className={`${step === 2 ? "" : "hidden"}`}
-            >
-              <div className="flex flex-col gap-8 py-4">
-                <div className="flex flex-col gap-4 max-w-2/4">
-                  <Label htmlFor="new-amount" className="text-left">
-                    Paid Amount (A minimum of NGN500)
-                  </Label>
-                  <Input
-                    type="number"
-                    step="100"
-                    value={amount}
-                    placeholder="500"
-                    className="max-w-[60%]"
-                    onChange={(e) => setAmount(parseFloat(e.target?.value))}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-4 w-full">
-                  <Label className="text-left">
-                    Payment{" "}
-                    {banksQ?.data?.data?.length > 1 ? "Options" : "Details"}
-                  </Label>
-                  {banksQ?.data?.data?.length &&
-                    banksQ?.data?.data?.map((item: BankType, index: number) => (
-                      <div
-                        key={`bank-${index}`}
-                        className="flex flex-row gap-8 items-center"
-                      >
-                        {banksQ?.data?.data?.length > 1 && (
-                          <RadioGroupItem value={item.id} id={item.id} />
-                        )}
-                        <div className="flex flex-col gap-4 bg-gray-300/10 p-2 rounded-md border-1 border-gray-500 w-full">
-                          <div className="flex flex-col gap-2 min-w-32">
-                            <p
-                              className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                            >
-                              Bank Name
-                            </p>
-                            <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
-                              {item.bank}
-                            </div>
+          <AnimatePresence mode={"wait"}>
+            {step == 1 && (
+              <motion.div
+                key="step1"
+                initial={{ opacity: 0, x: -100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 100 }}
+              >
+                <div className="flex flex-col gap-4 py-4">
+                  <div className="flex flex-col items-start gap-4">
+                    <Label htmlFor="query" className="text-left">
+                      Enter your Phone number or Email address{" "}
+                      <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="query"
+                      onChange={(e) => setQuery(e.target.value)}
+                      value={query}
+                      placeholder="johndoe@gmail.com"
+                      className="max-w-[60%]"
+                      required
+                    />
+                    <Button onClick={fetchPayment} disabled={isLoading}>
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Fetching...
+                        </>
+                      ) : (
+                        "Get Previous Payment"
+                      )}
+                    </Button>
+                    {payment && (
+                      <div className="flex flex-col gap-4 bg-gray-300/10 p-2 rounded-md border-1 border-gray-500 w-full">
+                        <div className="flex flex-col gap-2 min-w-32">
+                          <p
+                            className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                          >
+                            Name
+                          </p>
+                          <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                            {payment?.name}
                           </div>
-                          <div className="flex flex-col gap-2 min-w-32">
-                            <p
-                              className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                            >
-                              Account No.
-                            </p>
-                            <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
-                              <div className="flex flex-row items-center gap-12">
-                                {/* <Input
+                        </div>
+                        <div className="flex flex-col gap-2 min-w-32">
+                          <p
+                            className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                          >
+                            Payment Status
+                          </p>
+                          <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                            {getStatusBadge(payment?.paymentStatus)}
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2 min-w-32">
+                          <p
+                            className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                          >
+                            Paid Amount
+                          </p>
+                          <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                            NGN{payment?.paidAmount}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {notFound && (
+                      <p className="italic text-gray-500">
+                        Sorry, we couldn't find your payment. Confirm your email
+                        or phone number and try again
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+            {step === 2 && (
+              <motion.div
+                key="step2"
+                initial={{ opacity: 0, x: -100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 100 }}
+              >
+                <div className="flex flex-col gap-8 py-4">
+                  <div className="flex flex-col gap-4 max-w-2/4">
+                    <Label htmlFor="new-amount" className="text-left">
+                      Paid Amount (A minimum of NGN500)
+                    </Label>
+                    <Input
+                      type="number"
+                      step="100"
+                      value={amount}
+                      placeholder="500"
+                      className="max-w-[60%]"
+                      onChange={(e) => setAmount(parseFloat(e.target?.value))}
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-4 w-full">
+                    <Label className="text-left">
+                      Payment{" "}
+                      {(banksQ?.data?.data?.length ?? 0) > 1
+                        ? "Options"
+                        : "Details"}
+                    </Label>
+                    {banksQ?.isLoading && (
+                      <div className="flex flex-row gap-2 items-center">
+                        <Loader2 className="mr-2 h-6 w-6 animate-spin" />{" "}
+                        Fetching Payment Options...
+                      </div>
+                    )}
+                    {banksQ?.data?.data?.length &&
+                      banksQ.data.data?.map((item: BankType, index: number) => (
+                        <div
+                          key={`bank-${index}`}
+                          className="flex flex-row gap-8 items-center"
+                        >
+                          {(banksQ?.data?.data?.length ?? 0) > 1 && (
+                            <RadioGroupItem value={item.id} id={item.id} />
+                          )}
+                          <div className="flex flex-col gap-4 bg-gray-300/10 p-2 rounded-md border-1 border-gray-500 w-full">
+                            <div className="flex flex-col gap-2 min-w-32">
+                              <p
+                                className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                              >
+                                Bank Name
+                              </p>
+                              <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                                {item.bank}
+                              </div>
+                            </div>
+                            <div className="flex flex-col gap-2 min-w-32">
+                              <p
+                                className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                              >
+                                Account No.
+                              </p>
+                              <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                                <div className="flex flex-row items-center gap-12">
+                                  {/* <Input
                                       defaultValue={}
                                       readOnly
                                     /> */}
-                                <span className="font-bold text-lg">
-                                  {item.acctNo}
-                                </span>
-                                <Button
-                                  onClick={() =>
-                                    copyToClipboard(
-                                      item.acctNo,
-                                      handleCopySuccess
-                                    )
-                                  }
-                                  size="sm"
-                                  className="px-3"
-                                >
-                                  <span className="sr-only">{copyText}</span>
-                                  <CopyIcon />
-                                  {copyText}
-                                </Button>
+                                  <span className="font-bold text-lg">
+                                    {item.acctNo}
+                                  </span>
+                                  <Button
+                                    onClick={() =>
+                                      copyToClipboard(
+                                        item.acctNo,
+                                        handleCopySuccess
+                                      )
+                                    }
+                                    size="sm"
+                                    className="px-3"
+                                  >
+                                    <span className="sr-only">{copyText}</span>
+                                    <CopyIcon />
+                                    {copyText}
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex flex-col gap-2 min-w-32">
+                              <p
+                                className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
+                              >
+                                Account Name
+                              </p>
+                              <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                                {item?.name}
                               </div>
                             </div>
                           </div>
-                          <div className="flex flex-col gap-2 min-w-32">
-                            <p
-                              className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                            >
-                              Account Name
-                            </p>
-                            <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
-                              {item?.name}
-                            </div>
-                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-            <motion.div
-              key="step3"
-              initial={{ opacity: 0, x: -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              className={`flex flex-col gap-4 ${step === 3 ? "" : "hidden"}`}
-            >
-              {payment && (
-                <>
-                  <Label>Kindly Upload Proof of Payment</Label>
-                  <FileUpload
-                    uploadUrl={`/api/v1/payments/proof?id=${payment?.id}`}
-                    onUploadFinish={handleFileUpload}
-                  />
-                </>
-              )}
-            </motion.div>
+              </motion.div>
+            )}
+
+            {step === 3 && (
+              <motion.div
+                key="step3"
+                initial={{ opacity: 0, x: -100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 100 }}
+                className={`flex flex-col gap-4`}
+              >
+                {payment && (
+                  <>
+                    <Label>Kindly Upload Proof of Payment</Label>
+                    <FileUpload
+                      uploadUrl={`/api/v1/payments/proof?id=${payment?.id}`}
+                      onUploadFinish={handleFileUpload}
+                    />
+                  </>
+                )}
+              </motion.div>
+            )}
           </AnimatePresence>
           <DialogFooter>
             {step > 1 && (
