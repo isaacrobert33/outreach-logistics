@@ -48,7 +48,7 @@ export default function HeroSection({ data }: { data: OutreachType }) {
       <OutreachRegisterForm
         open={registerDialog}
         onClose={() => setRegisterDialog(false)}
-        outreachId={data?.id}
+        outreach={data}
       />
     </div>
   );
