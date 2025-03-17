@@ -419,6 +419,8 @@ export const OutreachRegisterForm = ({
     },
   });
 
+  const paidAmountState = useWatch({ control, name: "paidAmount" });
+
   const banksQ = useBanks();
 
   const handleCopySuccess = () => {
@@ -784,7 +786,9 @@ export const OutreachRegisterForm = ({
               <Button
                 type="submit"
                 onClick={handleSubmit(onSubmit)}
-                disabled={createMutation.isPending}
+                disabled={
+                  createMutation.isPending || (paidAmountState ?? 0) < 500
+                }
               >
                 {createMutation.isPending
                   ? "Registering..."
