@@ -1306,7 +1306,10 @@ export const PaymentTopupForm = ({
                       className="max-w-[60%]"
                       required
                     />
-                    <Button onClick={fetchPayment} disabled={isLoading}>
+                    <Button
+                      onClick={fetchPayment}
+                      disabled={isLoading || !query}
+                    >
                       {isLoading ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
