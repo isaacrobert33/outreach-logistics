@@ -11,22 +11,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 import { OutreachType } from "@/lib/types/common";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { OutreachSchema } from "@/lib/schema";
-import { Switch } from "@/components/ui/switch";
 
 export const CreateOutreachForm = ({
   open,
@@ -137,6 +129,25 @@ export const CreateOutreachForm = ({
                 {errors?.location && (
                   <p className="text-red-500 text-xs mt-1">
                     {errors?.date?.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="update-amount" className="text-left">
+                Outreach Fee (NGN)
+              </Label>
+              <div className="col-span-3">
+                <Input
+                  id="fee"
+                  type="number"
+                  step="0.01"
+                  {...register("fee")}
+                  className={errors?.fee ? "border-red-500" : ""}
+                />
+                {errors?.fee && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors?.fee?.message}
                   </p>
                 )}
               </div>
@@ -280,6 +291,25 @@ export const UpdateOutreachForm = ({
                   {errors?.location && (
                     <p className="text-red-500 text-xs mt-1">
                       {errors?.date?.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="update-amount" className="text-left">
+                  Outreach Fee (NGN)
+                </Label>
+                <div className="col-span-3">
+                  <Input
+                    id="fee"
+                    type="number"
+                    step="0.01"
+                    {...register("fee")}
+                    className={errors?.fee ? "border-red-500" : ""}
+                  />
+                  {errors?.fee && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors?.fee?.message}
                     </p>
                   )}
                 </div>

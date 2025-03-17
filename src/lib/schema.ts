@@ -1,6 +1,6 @@
 import { date, z } from "zod";
 
-export const PaymentStatus = z.enum(["NOT_PAID", "PENDING", "PAID"]);
+export const PaymentStatus = z.enum(["NOT_PAID", "PENDING", "PAID", "PARTIAL"]);
 export const GenderSchema = z.enum(["UNSPECIFIED", "MALE", "FEMALE"]);
 
 export const PaymentSchema = z.object({
@@ -23,13 +23,7 @@ export const PaymentSchema = z.object({
 
   pendingAmount: z
     .number()
-    .min(500)
-    .or(
-      z
-        .string()
-        .min(3)
-        .transform((arg) => parseFloat(arg))
-    )
+    .or(z.string().transform((arg) => parseFloat(arg)))
     .optional(),
   createdAt: z.string().optional(),
   outreachId: z.string().optional(),
@@ -51,4 +45,8 @@ export const OutreachSchema = z.object({
   description: z.string().optional(),
   location: z.string().optional(),
   date: z.string().optional(),
+  fee: z
+    .number()
+    .or(z.string().transform((arg) => parseFloat(arg)))
+    .optional(),
 });

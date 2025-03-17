@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { Response } from "@/lib/utils";
 import { PaymentSchema } from "@/lib/schema";
+import { PaymentStatus } from "@prisma/client";
 
 export async function PATCH(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -12,7 +13,20 @@ export async function PATCH(req: NextRequest) {
     return Response({ message: "Invalid ID", status: 400 });
   }
 
-  const validatedData = PaymentSchema.parse(payload);
+  const payment = await prisma.payment.findUnique({ where: { id } });
+
+  if (!payment) {
+    return Response({ status: 404, message: "Payment not found." });
+  }
+
+  const validatedData = PaymentSchema.partial().strict().parse(payload);
+
+  if (validatedData.pendingAmount) {
+    // Ensure pending amount adds to existing
+    validatedData.pendingAmount =
+      (payment.pendingAmount ?? 0) + validatedData.pendingAmount;
+    validatedData.paymentStatus = PaymentStatus.PENDING;
+  }
 
   try {
     const updatedPayment = await prisma.payment.update({

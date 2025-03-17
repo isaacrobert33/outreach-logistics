@@ -60,3 +60,10 @@ export function copyToClipboard(
       }
     });
 }
+
+export const formatDateIso = (isoString: string) => {
+  const date = new Date(isoString);
+  const datePart = date.toDateString(); // "Sun Mar 16 2025"
+  const timePart = date.toTimeString().split(" ")[0];
+  return `${datePart} ${timePart}`;
+};

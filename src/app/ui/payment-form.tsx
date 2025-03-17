@@ -34,11 +34,12 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { ExtFile } from "@files-ui/react";
 import CrewSelect from "@/components/crews-select";
 import { copyToClipboard } from "@/lib/utils";
-import { CopyIcon, Loader2 } from "lucide-react";
+import { CheckIcon, CopyIcon, Loader2, PinIcon } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { getStatusBadge } from "./dashboard";
+import { Badge } from "@/components/ui/badge";
 
 const units = [
   "Bible Study",
@@ -53,6 +54,8 @@ const units = [
 ];
 
 const levels = ["100", "200", "300", "400", "500"];
+
+export const paymentStatuses = ["NOT_PAID", "PENDING", "PAID", "PARTIAL"];
 
 export const CreatePaymentForm = ({
   open,
@@ -295,9 +298,15 @@ export const CreatePaymentForm = ({
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="PAID">Paid</SelectItem>
-                      <SelectItem value="PENDING">Pending</SelectItem>
-                      <SelectItem value="NOT_PAID">Not Paid</SelectItem>
+                      {paymentStatuses.map((status) => (
+                        <SelectItem
+                          className="capitalize"
+                          key={status}
+                          value={status}
+                        >
+                          {status.toLowerCase().replace("_", " ")}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 )}
@@ -380,11 +389,11 @@ const STORAGE_KEY = "registration";
 export const OutreachRegisterForm = ({
   open,
   onClose,
-  outreachId,
+  outreach,
 }: {
   open: boolean;
   onClose: () => void;
-  outreachId: string;
+  outreach: OutreachType;
 }) => {
   const [step, setStep] = useState<number>(1);
   const [copyText, setCopyText] = useState("Copy");
@@ -410,6 +419,7 @@ export const OutreachRegisterForm = ({
       phone: "",
       bankId: "",
       outreachId: "",
+      unit: "President",
     },
   });
 
@@ -447,6 +457,10 @@ export const OutreachRegisterForm = ({
   };
 
   const onSubmit: SubmitHandler<z.infer<typeof PaymentSchema>> = (data) => {
+    if (payment) {
+      setStep(3);
+      return;
+    }
     createMutation.mutate(data);
   };
 
@@ -455,10 +469,10 @@ export const OutreachRegisterForm = ({
   };
 
   useEffect(() => {
-    if (outreachId) {
-      setValue("outreachId", outreachId);
+    if (outreach?.id) {
+      setValue("outreachId", outreach?.id);
     }
-  }, [outreachId]);
+  }, [outreach]);
 
   useEffect(() => {
     if (banksQ?.data?.data?.length) {
@@ -569,7 +583,7 @@ export const OutreachRegisterForm = ({
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
+                <div className="flex flex-row items-center gap-24">
                   <Label htmlFor="new-gender" className="text-left">
                     Gender
                   </Label>
@@ -597,20 +611,20 @@ export const OutreachRegisterForm = ({
                     )}
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="new-unit" className="text-left">
+                <div className="flex flex-col items-start gap-4">
+                  <Label htmlFor="new-unit" className="text-left leading-5">
                     Unit (Kindly choose President if you are a non worker)
                   </Label>
                   <Controller
                     name="unit"
                     control={control}
-                    defaultValue="president"
+                    defaultValue="President"
                     render={({ field }) => (
                       <Select
                         value={field.value || undefined}
                         onValueChange={(value) => field.onChange(value)}
                       >
-                        <SelectTrigger className="col-span-3">
+                        <SelectTrigger className="w-2/4">
                           <SelectValue placeholder="Select unit" />
                         </SelectTrigger>
                         <SelectContent>
@@ -638,15 +652,17 @@ export const OutreachRegisterForm = ({
               className={`${step === 2 ? "" : "hidden"}`}
             >
               <div className="flex flex-col gap-8 py-4">
-                <div className="flex flex-col gap-4 max-w-2/4">
+                <div className="flex flex-col gap-4">
                   <Label htmlFor="new-amount" className="text-left">
-                    Paid Amount (A minimum of NGN500)
+                    Amount (Fee is NGN{outreach.fee}+X, with a minimum of
+                    NGN500)
                   </Label>
-                  <div className="col-span-3">
+                  <div className="max-w-2/4">
                     <Input
                       id="new-amount"
                       type="number"
                       step="100"
+                      readOnly={!!payment}
                       {...register("paidAmount")}
                       className={errors?.paidAmount ? "border-red-500" : ""}
                     />
@@ -805,6 +821,7 @@ export const UpdatePaymentForm = ({
     register,
     formState: { errors },
     control,
+    setValue,
     reset,
   } = useForm({
     resolver: zodResolver(PaymentSchema),
@@ -812,6 +829,8 @@ export const UpdatePaymentForm = ({
       paidAmount: 0.0,
     },
   });
+  const paidAmountState = useWatch({ control, name: "paidAmount" });
+  const pendingAmountState = useWatch({ control, name: "pendingAmount" });
   const outreachQ = useQuery({
     queryKey: ["outreach"],
     queryFn: async () => {
@@ -838,6 +857,16 @@ export const UpdatePaymentForm = ({
     },
   });
 
+  const handleApprovePending = () => {
+    const confirm = window.confirm(
+      "Are you sure you want to proceed with approving this pending amount ?"
+    );
+    if (!confirm) return;
+
+    setValue("paidAmount", (paidAmountState ?? 0) + (pendingAmountState ?? 0));
+    setValue("pendingAmount", 0.0);
+  };
+
   const onSubmit: SubmitHandler<z.infer<typeof PaymentSchema>> = (data) => {
     updateMutation.mutate(data);
   };
@@ -847,10 +876,11 @@ export const UpdatePaymentForm = ({
       reset(payment);
     }
   }, [payment]);
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent>
+        <DialogContent className="sm:min-w-[300px] sm:max-w-[40%]">
           <DialogHeader>
             <DialogTitle>Update Payment</DialogTitle>
             <DialogDescription>
@@ -981,9 +1011,29 @@ export const UpdatePaymentForm = ({
                   )}
                 />
               </div>
+              {!!pendingAmountState && (
+                <div className="flex flex-row gap-2 items-center">
+                  <Badge
+                    variant={"outline"}
+                    className="bg-amber-500 p-3 font-bold"
+                  >
+                    <PinIcon />
+                    Pending Amount: NGN{payment?.pendingAmount}
+                  </Badge>
+                  <Button
+                    // size={"icon"}
+                    variant={"outline"}
+                    onClick={handleApprovePending}
+                    className="bg-green-500/30 rounded-full border-gray-300"
+                  >
+                    <CheckIcon className="text-white" />
+                    Approve
+                  </Button>
+                </div>
+              )}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="update-amount" className="text-left">
-                  Amount
+                  Paid Amount
                 </Label>
                 <div className="col-span-3">
                   <Input
@@ -1050,9 +1100,15 @@ export const UpdatePaymentForm = ({
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="PAID">Paid</SelectItem>
-                        <SelectItem value="PENDING">Pending</SelectItem>
-                        <SelectItem value="NOT_PAID">Not Paid</SelectItem>
+                        {paymentStatuses.map((status) => (
+                          <SelectItem
+                            className="capitalize"
+                            key={status}
+                            value={status}
+                          >
+                            {status.toLowerCase().replace("_", " ")}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   )}
@@ -1114,17 +1170,20 @@ export const UpdatePaymentForm = ({
               </div>
 
               <div className="flex flex-col gap-2">
-                <p>Proof of Payment</p>
+                <p>Proof of Payment(s)</p>
                 {payment.proof_image ? (
-                  <Zoom>
-                    <CldImage
-                      width="360"
-                      height="200"
-                      src={payment.proof_image}
-                      sizes="100vw"
-                      alt={`${payment.name}'s Proof of Payment`}
-                    />
-                  </Zoom>
+                  payment.proof_image?.map((src, index) => (
+                    <Zoom key={index}>
+                      <CldImage
+                        width="360"
+                        height="200"
+                        src={src}
+                        sizes="100vw"
+                        className="rounded-lg"
+                        alt={`${payment.name}'s Proof of Payment`}
+                      />
+                    </Zoom>
+                  ))
                 ) : (
                   <span className="italic text-gray-500">No uploads...</span>
                 )}
@@ -1213,19 +1272,22 @@ export const PaymentTopupForm = ({
     }
   };
 
-  const handleFileUpload = (results: ExtFile[]) => {
+  const handleFileUpload = () => {
     setProof(true);
   };
 
   const handleRegistrationDone = () => {
     toast("Success", {
-      description: "Thank you for topping up! God bless you.",
+      description: "Thank you for topping up your payment! God bless you.",
     });
     onClose();
     setStep(1);
+    setPayment(null);
     setQuery("");
-    setAmount(0);
+    setAmount(500);
   };
+
+  console.log(banksQ?.data);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

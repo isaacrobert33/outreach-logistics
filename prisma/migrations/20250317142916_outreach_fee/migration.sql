@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Outreach" ADD COLUMN     "fee" DOUBLE PRECISION DEFAULT 0.0;

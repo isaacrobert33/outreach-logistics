@@ -177,7 +177,7 @@ export default function LandingPage() {
 
               <Button
                 className="mt-4 md:flex bg-green-600 hover:bg-green-500"
-                onClick={() => setRegisterDialog(true)}
+                onClick={() => setTopupDialog(true)}
                 size={"lg"}
               >
                 Top-Up Now
@@ -475,12 +475,12 @@ export default function LandingPage() {
         <OutreachRegisterForm
           open={registerDialog}
           onClose={() => setRegisterDialog(false)}
-          outreachId={data?.data?.data?.id}
+          outreach={data?.data?.data}
         />
       )}
       {data?.data?.data && (
         <PaymentTopupForm
-          open={registerDialog}
+          open={topupDialog}
           onClose={() => setTopupDialog(false)}
           outreachId={data?.data?.data?.id}
         />

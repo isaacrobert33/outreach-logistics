@@ -118,6 +118,7 @@ export default function Outreachs() {
                     <TableHead>Description</TableHead>
                     <TableHead>Location</TableHead>
                     <TableHead>Event Date</TableHead>
+                    <TableHead>Outreach Fee</TableHead>
                     <TableHead className="hidden md:table-cell">Date</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -146,6 +147,9 @@ export default function Outreachs() {
                         </TableCell>
                         <TableCell className="capitalize">
                           {outreach.date}
+                        </TableCell>
+                        <TableCell className="capitalize">
+                          NGN {outreach.fee}
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
                           {outreach.createdAt}

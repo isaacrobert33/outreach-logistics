@@ -23,6 +23,7 @@ model User {
 enum PaymentStatus {
   NOT_PAID
   PENDING
+  PARTIAL
   PAID
 }
 
@@ -38,6 +39,7 @@ model Outreach {
   description String?
   location    String?
   date        String?
+  fee         Float?        @default(0.0)
   createdAt   DateTime  @default(now()) @map(name: "created_at")
   updatedAt   DateTime  @updatedAt @map(name: "updated_at")
   Payment     Payment[]
@@ -58,7 +60,7 @@ model BankDetail {
 model Payment {
   id            String        @id @default(cuid())
   name          String?
-  paymentStatus PaymentStatus @default(NOT_PAID)
+  paymentStatus PaymentStatus @default(PENDING)
   gender        Gender        @default(UNSPECIFIED)
   crew          String?       @default("nocrew")
   unit          String?       @default("President")
@@ -71,7 +73,7 @@ model Payment {
   outreachId    String?
   outreach      Outreach?     @relation(fields: [outreachId], references: [id])
   bankId        String?
-  bank          BankDetail?     @relation(fields: [bankId], references: [id])
+  bank          BankDetail?   @relation(fields: [bankId], references: [id])
   createdAt     DateTime      @default(now()) @map(name: "created_at")
   updatedAt     DateTime      @updatedAt @map(name: "updated_at")
 

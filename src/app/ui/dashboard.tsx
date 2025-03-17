@@ -38,10 +38,15 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { BankType, OutreachType, PaymentType } from "@/lib/types/common";
 import { PaymentStatus } from "@prisma/client";
 import { toast } from "sonner";
-import { CreatePaymentForm, UpdatePaymentForm } from "./payment-form";
+import {
+  CreatePaymentForm,
+  paymentStatuses,
+  UpdatePaymentForm,
+} from "./payment-form";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import AccountMenu from "./account-menu";
+import { formatDateIso } from "@/lib/utils";
 
 export const getStatusBadge = (status?: PaymentStatus) => {
   switch (status) {
@@ -49,6 +54,8 @@ export const getStatusBadge = (status?: PaymentStatus) => {
       return <Badge className="bg-green-500">Paid</Badge>;
     case "PENDING":
       return <Badge className="bg-yellow-500">Pending</Badge>;
+    case "PARTIAL":
+      return <Badge className="bg-blue-500">Partial</Badge>;
     default:
       return <Badge className="bg-red-500">Not Approved</Badge>;
   }
@@ -303,9 +310,15 @@ export default function Dashboard() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="*">All Statuses</SelectItem>
-                  <SelectItem value="PAID">Paid</SelectItem>
-                  <SelectItem value="PENDING">Pending</SelectItem>
-                  <SelectItem value="NOT_PAID">Not Paid</SelectItem>
+                  {paymentStatuses.map((status) => (
+                    <SelectItem
+                      className="capitalize"
+                      key={status}
+                      value={status}
+                    >
+                      {status.toLowerCase().replace("_", " ")}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
 
@@ -412,7 +425,7 @@ export default function Dashboard() {
                           NGN{payment.paidAmount?.toFixed(2)}
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                          {payment.createdAt}
+                          {formatDateIso(payment.createdAt as any)}
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
                           {payment.bank}
