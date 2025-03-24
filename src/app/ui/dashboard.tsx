@@ -378,7 +378,7 @@ export default function Dashboard() {
                         {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
                       </div>
                     </TableHead>
-                    <TableHead className="hidden md:table-cell">Date</TableHead>
+                    <TableHead>Date</TableHead>
                     <TableHead>Payment Option</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Outreach</TableHead>
@@ -424,10 +424,10 @@ export default function Dashboard() {
                         <TableCell>
                           NGN{payment.paidAmount?.toFixed(2)}
                         </TableCell>
-                        <TableCell className="hidden md:table-cell">
+                        <TableCell>
                           {formatDateIso(payment.createdAt as any)}
                         </TableCell>
-                        <TableCell className="hidden md:table-cell">
+                        <TableCell clasName="capitalize">
                           {payment.bank}
                         </TableCell>
                         <TableCell>
