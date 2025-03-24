@@ -427,7 +427,7 @@ export default function Dashboard() {
                         <TableCell>
                           {formatDateIso(payment.createdAt as any)}
                         </TableCell>
-                        <TableCell clasName="capitalize">
+                        <TableCell className="capitalize">
                           {payment.bank}
                         </TableCell>
                         <TableCell>
