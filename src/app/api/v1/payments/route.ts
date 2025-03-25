@@ -58,7 +58,10 @@ const generatePaymentId = async (outreachId?: string, crew?: string) => {
   const paymentCount = await prisma.payment.count({
     where: { crew: crew, outreachId },
   });
-  return `${crew.slice(0, 3).toUpperCase()}/${formatNumber(paymentCount + 1)}`;
+  const id = `${crew.slice(0, 3).toUpperCase()}/${formatNumber(paymentCount + 1)}`;
+  const idExists = !!(await prisma.payment.count({ where: { id } }));
+  
+  return idExists ? `${crew.slice(0, 3).toUpperCase()}/${formatNumber(paymentCount + 2)}`: id;
 };
 
 export const POST = async (req: NextRequest) => {
@@ -66,6 +69,14 @@ export const POST = async (req: NextRequest) => {
     const body = await req.json();
 
     const validatedBody = PaymentSchema.parse(body);
+    const validateUniqueness = await prisma.payment.count({ where: { OR: [{email: validatedBody.email}, {phone: validatedBody.phone}]}});
+
+    if (validateUniqueness) {
+      return Response({
+        status: 400,
+        message: "Email or Phone number already exists.",
+      });
+    }
 
     const payment = await prisma.payment.create({
       data: {
