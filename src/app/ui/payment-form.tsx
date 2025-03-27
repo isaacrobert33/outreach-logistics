@@ -52,6 +52,7 @@ const units = [
   "Publicity",
   "President",
   "Ushering",
+  "Welfare",
 ];
 
 const levels = ["100", "200", "300", "400", "500"];
