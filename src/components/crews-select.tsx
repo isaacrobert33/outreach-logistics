@@ -38,7 +38,10 @@ const CrewSelect = ({
               <SelectItem value="kitchen">Kitchen Crew</SelectItem>
               <SelectItem value="technical">Technical Crew</SelectItem>
               <SelectItem value="logistics">Logistics Crew</SelectItem>
+              <SelectItem value="medical">Medical Crew</SelectItem>
+              <SelectItem value="sanitation">Sanitation Crew</SelectItem>
               <SelectItem value="security">Security Crew</SelectItem>
+               <SelectItem value="ushering">Ushering Crew</SelectItem>
             </SelectContent>
           </Select>
         )}

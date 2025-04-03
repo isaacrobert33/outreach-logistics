@@ -427,7 +427,9 @@ export default function Dashboard() {
                         <TableCell>
                           {formatDateIso(payment.createdAt as any)}
                         </TableCell>
-                        <TableCell>{payment.bank}</TableCell>
+                        <TableCell className="capitalize">
+                          {payment.bank}
+                        </TableCell>
                         <TableCell>
                           {getStatusBadge(payment.paymentStatus || "NOT_PAID")}
                         </TableCell>

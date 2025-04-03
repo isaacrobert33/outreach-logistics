@@ -53,6 +53,7 @@ const units = [
   "Publicity",
   "President",
   "Ushering",
+  "Welfare",
 ];
 
 const levels = ["100", "200", "300", "400", "500"];
@@ -1041,38 +1042,7 @@ export const UpdatePaymentForm = ({
                   )}
                 </div>
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="new-crew" className="text-left">
-                  Crew
-                </Label>
-                <Controller
-                  name="crew"
-                  control={control}
-                  defaultValue="nocrew"
-                  rules={{ required: "Crew is required" }}
-                  render={({ field }) => (
-                    <Select
-                      value={field.value}
-                      onValueChange={(value) => field.onChange(value)}
-                    >
-                      <SelectTrigger className="col-span-3">
-                        <SelectValue placeholder="Select crew" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="nocrew">No Crew</SelectItem>
-                        <SelectItem value="kitchen">Kitchen Crew</SelectItem>
-                        <SelectItem value="technical">
-                          Technical Crew
-                        </SelectItem>
-                        <SelectItem value="logistics">
-                          Logistics Crew
-                        </SelectItem>
-                        <SelectItem value="security">Security Crew</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </div>
+              <CrewSelect control={control} />
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="update-status" className="text-left">
                   Status
