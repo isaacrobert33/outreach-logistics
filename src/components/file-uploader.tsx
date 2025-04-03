@@ -8,7 +8,7 @@ import {
   VideoPreview,
   ExtFile,
 } from "@files-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024;
 
@@ -16,13 +16,18 @@ const FileUpload = ({
   uploadUrl,
   onUploadFinish,
   onUploadStart = () => {},
+  onFileExist,
   maxFiles = 15,
+  behaviour = "add"
 }: {
   uploadUrl: string;
   onUploadFinish?: (uploadedFiles: ExtFile[]) => void;
   onUploadStart?: () => void;
+  onFileExist?: (exist:boolean) => void;
   maxFiles?: number;
+  behaviour?: "replace" | "add";
 }) => {
+  const fileInputRef = useRef<HTMLDivElement>(null);
   const [extFiles, setExtFiles] = useState<ExtFile[]>([]);
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
   const [videoSrc, setVideoSrc] = useState<File | string | undefined>(
@@ -31,6 +36,12 @@ const FileUpload = ({
 
   const updateFiles = (incomingFiles: ExtFile[]) => {
     setExtFiles(incomingFiles);
+    if (incomingFiles.length > maxFiles) {
+      setExtFiles(incomingFiles.slice(0, maxFiles));
+    }
+    if (onFileExist) {
+      onFileExist(incomingFiles.length > 0);
+    }
   };
   const onDelete = (id: string | number | undefined) => {
     setExtFiles(extFiles.filter((x) => x.id !== id));
@@ -65,9 +76,21 @@ const FileUpload = ({
     );
   };
 
+  // const handleUpload = () => {
+  //   if (fileInputRef.current) {
+  //     fileInputRef.current.upload();
+  //   }
+  // }
+
+  useEffect(() => {
+    console.log(fileInputRef.current);
+  }, [fileInputRef]);
+
   return (
     <div className="flex flex-col items-center w-full z-12">
       <Dropzone
+        ref={fileInputRef}
+        color={"#3a96cb"}
         onChange={updateFiles}
         minHeight="195px"
         value={extFiles}
@@ -75,17 +98,19 @@ const FileUpload = ({
         maxFiles={maxFiles}
         maxFileSize={MAX_FILE_SIZE}
         label="Drag'n drop files here or click to browse"
+        behaviour={behaviour}
         uploadConfig={{
           // autoUpload: true
           url: uploadUrl,
           cleanOnUpload: true,
+          
         }}
         onUploadStart={onUploadStart}
         onUploadFinish={handleFinish}
         actionButtons={{
           position: "after",
           abortButton: { className: "!bg-primary" },
-          deleteButton: { className: "!bg-red-600" },
+          // deleteButton: { className: "!bg-red-600" },
           uploadButton: { className: "!bg-primary" },
         }}
       >

@@ -11,7 +11,7 @@ export const GET = async (req: NextRequest) => {
   const bank = searchParams.get("bank") || "*";
   const gender = searchParams.get("gender") || "*";
 
-  const filters: { [key: string]: any } = { OR: [] };
+  const filters: { [key: string]: any } = { OR: [], isDeleted: false };
 
   if (query != "*") {
     filters["OR"].push({ name: { contains: query } });
@@ -65,7 +65,7 @@ export const POST = async (req: NextRequest) => {
   try {
     const body = await req.json();
 
-    const validatedBody = PaymentSchema.parse(body);
+    const validatedBody = PaymentSchema.parse(body) as any;
 
     const payment = await prisma.payment.create({
       data: {

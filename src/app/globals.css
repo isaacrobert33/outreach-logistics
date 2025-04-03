@@ -146,3 +146,9 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
+
+/* 
+.\[\&_svg\:not\(\[class\*\=\'size-\'\]\)\]\:size-4 svg:not([class*="size-"]) {
+    width: 1rem;
+    height: 1rem;
+  } */

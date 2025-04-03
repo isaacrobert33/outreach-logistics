@@ -23,6 +23,7 @@ import {
   SiX,
   SiInstagram,
   SiYoutube,
+  SiWhatsapp,
 } from "@icons-pack/react-simple-icons";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -30,6 +31,7 @@ import axios from "axios";
 import { BankType, OutreachType } from "@/lib/types/common";
 import { OutreachRegisterForm, PaymentTopupForm } from "./payment-form";
 import { useBanks } from "@/lib/hooks";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function LandingPage() {
   const [registerDialog, setRegisterDialog] = useState<boolean>(false);
@@ -193,106 +195,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Registration Section */}
-      {/* <section
-        id="register"
-        className="py-16 md:py-24 bg-primary/5 dark:bg-primary/10"
-      >
-        <div className="container px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
-            <div data-aos="fade-right">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Register for the Event
-              </h2>
-              <p className="mt-4 text-gray-500 dark:text-gray-400 md:text-xl">
-                Secure your spot at our Global Outreach Summit and be part of a
-                movement that's creating positive change around the world.
-              </p>
-              <ul className="mt-6 grid gap-2">
-                {[
-                  "Access to all keynote sessions and workshops",
-                  "Networking opportunities with industry leaders",
-                  "Participation in hands-on community projects",
-                  "Event materials and resources",
-                  "Certificate of participation",
-                ].map((item, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-primary" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <Card className="w-full" data-aos="fade-left" data-aos-delay="200">
-              <CardHeader>
-                <CardTitle>Register Now</CardTitle>
-                <CardDescription>
-                  Fill out the form below to secure your spot at the event.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form className="grid gap-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="first-name"
-                        className="text-sm font-medium leading-none"
-                      >
-                        First name
-                      </label>
-                      <Input
-                        id="first-name"
-                        placeholder="Enter your first name"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="last-name"
-                        className="text-sm font-medium leading-none"
-                      >
-                        Last name
-                      </label>
-                      <Input
-                        id="last-name"
-                        placeholder="Enter your last name"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="email"
-                      className="text-sm font-medium leading-none"
-                    >
-                      Email
-                    </label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="Enter your email"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="organization"
-                      className="text-sm font-medium leading-none"
-                    >
-                      Organization
-                    </label>
-                    <Input
-                      id="organization"
-                      placeholder="Enter your organization"
-                    />
-                  </div>
-                </form>
-              </CardContent>
-              <CardFooter>
-                <Button className="w-full">Complete Registration</Button>
-              </CardFooter>
-            </Card>
-          </div>
-        </div>
-      </section> */}
 
       <section className="relative py-20 md:py-32 overflow-hidden">
         <div className="absolute inset-0" />
@@ -462,6 +364,21 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      <div className="fixed right-3 bottom-4">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipContent>Contact us via WhatsApp</TooltipContent>
+            <TooltipTrigger>
+              <Button asChild size={'icon'} variant={"outline"} className="bg-white dark:bg-gray-950 min-w-[60px] min-h-[60px] rounded-full shadow-md">
+                <a href="https://wa.link/hvvlu9" target="_blank">
+                    <SiWhatsapp title="Contact us via WhatsApp" className="text-green-500 size-7"/>
+                </a>
+              </Button>
+          </TooltipTrigger>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
 
       {data?.data?.data && (
         <OutreachRegisterForm

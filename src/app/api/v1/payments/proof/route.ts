@@ -14,9 +14,9 @@ export async function POST(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
 
-  if (!id) {
-    return Response({ message: "Invalid ID", status: 400 });
-  }
+  // if (!id) {
+  //   return Response({ message: "Invalid ID", status: 400 });
+  // }
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
 
     const result = await uploadPromise;
 
+    if (id) {
     // Update payment
     await prisma.payment.update({
       where: { id },
@@ -53,8 +54,9 @@ export async function POST(req: NextRequest) {
         },
       },
     });
+  }
 
-    return NextResponse.json({ result }, { status: 200 });
+    return Response({ data: result, status: 200, message: "File uploaded" });
   } catch (error) {
     return NextResponse.json(
       { error: `Failed to upload file ${error}` },

@@ -19,7 +19,7 @@ export async function PATCH(req: NextRequest) {
     return Response({ status: 404, message: "Payment not found." });
   }
 
-  const validatedData = PaymentSchema.partial().strict().parse(payload);
+  const validatedData = PaymentSchema.partial().strict().parse(payload) as any;
 
   if (validatedData.pendingAmount) {
     // Ensure pending amount adds to existing
@@ -52,8 +52,11 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
-    await prisma.payment.delete({
+    await prisma.payment.update({
       where: { id: id },
+      data: {
+        isDeleted: true,
+      }
     });
 
     return Response({ status: 204 });
