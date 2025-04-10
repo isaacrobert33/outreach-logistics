@@ -87,8 +87,7 @@ async function generateNextId(outreachId?: string, crew?: string) {
 
 
 export const POST = async (req: NextRequest) => {
-  try {
-    const body = await req.json();
+   const body = await req.json();
 
     const validatedBody = PaymentSchema.parse(body) as any;
     
@@ -101,13 +100,16 @@ export const POST = async (req: NextRequest) => {
       });
     }
 
+    const paymentId = await await generateNextId(
+      validatedBody.outreachId,
+      validatedBody.crew
+    )
+    
+    try {
     const payment = await prisma.payment.create({
       data: {
         ...validatedBody,
-        id: await generateNextId(
-          validatedBody.outreachId,
-          validatedBody.crew
-        ),
+        id: paymentId,
         outreachId: validatedBody.outreachId,
       },
     });
@@ -119,7 +121,7 @@ export const POST = async (req: NextRequest) => {
   } catch (error: any) {
     return Response({
       status: 400,
-      message: error?.message,
+      message: `${error?.message} ${paymentId}`,
       data: error.errors,
     });
   }
