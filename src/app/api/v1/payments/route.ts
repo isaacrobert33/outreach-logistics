@@ -53,16 +53,38 @@ export const GET = async (req: NextRequest) => {
   });
 };
 
-const generatePaymentId = async (outreachId?: string, crew?: string) => {
-  crew = crew ?? "nocrew";
-  const paymentCount = await prisma.payment.count({
-    where: { crew: crew, outreachId },
-  });
-  const id = `${crew.slice(0, 3).toUpperCase()}/${formatNumber(paymentCount + 1)}`;
-  const idExists = !!(await prisma.payment.count({ where: { id } }));
+// const generatePaymentId = async (outreachId?: string, crew?: string) => {
+//   crew = crew ?? "nocrew";
+//   const paymentCount = await prisma.payment.count({
+//     where: { crew: crew, outreachId },
+//   });
+//   const id = `${crew.slice(0, 3).toUpperCase()}/${formatNumber(paymentCount + 1)}`;
+//   const idExists = !!(await prisma.payment.count({ where: { id } }));
   
-  return idExists ? `${crew.slice(0, 3).toUpperCase()}/${formatNumber(paymentCount + 2)}`: id;
-};
+//   return idExists ? `${crew.slice(0, 3).toUpperCase()}/${formatNumber(paymentCount + 2)}`: id;
+// };
+
+
+async function generateNextId(outreachId?: string, crew?: string) {
+  // Get the last created record by ID (assuming sequential creation)
+  const lastRecord = await prisma.payment.findFirst({
+    where: {crew: crew ?? "nocrew", outreachId},
+    orderBy: { createdAt: 'desc' },
+  });
+
+  let newId;
+  if (lastRecord && lastRecord.id) {
+    const [prefix, numPart] = lastRecord.id.split('/');
+    const nextNumber = String(parseInt(numPart, 10) + 1).padStart(3, '0');
+    newId = `${prefix}/${nextNumber}`;
+  } else {
+    // If no record exists yet
+    newId = `${(crew ?? "nocrew").slice(0, 3).toUpperCase()}/001`;
+  }
+
+  return newId;
+}
+
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -82,7 +104,7 @@ export const POST = async (req: NextRequest) => {
     const payment = await prisma.payment.create({
       data: {
         ...validatedBody,
-        id: await generatePaymentId(
+        id: await generateNextId(
           validatedBody.outreachId,
           validatedBody.crew
         ),
