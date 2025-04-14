@@ -185,11 +185,11 @@ export default function LandingPage() {
             >
               <div className="absolute -inset-4 rounded-xl bg-gradient-to-r from-primary/20 to-purple-500/20 blur-xl" />
               <Image
-                src="/outreach.jpg"
+                src="/outreach.jpeg"
                 alt="Event Image"
-                width={550}
-                height={550}
-                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover opacity-45"
+                width={600}
+                height={750}
+                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover opacity-45 h-[20rem]"
               />
             </div>
           </div>
