@@ -419,6 +419,7 @@ export const OutreachRegisterForm = ({
       bankId: "",
       outreachId: outreach?.id,
       unit: "President",
+      level: "",
     },
   });
 
@@ -639,6 +640,36 @@ export const OutreachRegisterForm = ({
                               value={unit}
                             >
                               {unit}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="new-level" className="text-left">
+                    Level
+                  </Label>
+                  <Controller
+                    name="level"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value || undefined}
+                        onValueChange={(value) => field.onChange(value)}
+                      >
+                        <SelectTrigger className="col-span-3">
+                          <SelectValue placeholder="Select level" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {levels?.map((level, index) => (
+                            <SelectItem
+                              key={level}
+                              className="capitalize"
+                              value={level}
+                            >
+                              {level}
                             </SelectItem>
                           ))}
                         </SelectContent>
