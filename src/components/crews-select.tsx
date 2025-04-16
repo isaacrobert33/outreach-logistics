@@ -35,9 +35,11 @@ const CrewSelect = ({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="nocrew">No Crew</SelectItem>
+              <SelectItem value="counselling">Counselling Crew</SelectItem>
               <SelectItem value="kitchen">Kitchen Crew</SelectItem>
               <SelectItem value="technical">Technical Crew</SelectItem>
               <SelectItem value="logistics">Logistics Crew</SelectItem>
+              <SelectItem value="pub">Media Crew</SelectItem>
               <SelectItem value="medical">Medical Crew</SelectItem>
               <SelectItem value="sanitation">Sanitation Crew</SelectItem>
               <SelectItem value="security">Security Crew</SelectItem>
