@@ -34,7 +34,13 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { ExtFile } from "@files-ui/react";
 import CrewSelect from "@/components/crews-select";
 import { copyToClipboard } from "@/lib/utils";
-import { CheckCircle2Icon, CheckIcon, CopyIcon, Loader2, PinIcon } from "lucide-react";
+import {
+  CheckCircle2Icon,
+  CheckIcon,
+  CopyIcon,
+  Loader2,
+  PinIcon,
+} from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
@@ -411,7 +417,7 @@ export const OutreachRegisterForm = ({
       email: "",
       phone: "",
       bankId: "",
-      outreachId: "",
+      outreachId: outreach?.id,
       unit: "President",
     },
   });
@@ -424,14 +430,14 @@ export const OutreachRegisterForm = ({
     setCopyText("Copied!");
     setTimeout(() => setCopyText("Copy"), 3000);
   };
-  
+
   const handleRegistrationDone = () => {
     toast("Success", {
       description: "Thank you for registering! God bless you.",
     });
     onClose();
     setStep(1);
-    reset();
+    reset({ outreachId: outreach?.id });
     localStorage.removeItem(STORAGE_KEY);
   };
 
@@ -448,7 +454,6 @@ export const OutreachRegisterForm = ({
     },
   });
 
-  
   const onSubmit: SubmitHandler<z.infer<typeof PaymentSchema>> = (data) => {
     if (payment) {
       setStep(3);
@@ -459,10 +464,12 @@ export const OutreachRegisterForm = ({
 
   const handleFileUpload = (results: ExtFile[]) => {
     setProof(true);
-    const images = [...results.map((file) => file.serverResponse?.payload?.data?.public_id)];
+    const images = [
+      ...results.map((file) => file.serverResponse?.payload?.data?.public_id),
+    ];
     console.log(images);
     setValue("proof_image", images);
-    createMutation.mutate({...getValues(), proof_image: images});
+    createMutation.mutate({ ...getValues(), proof_image: images });
   };
 
   useEffect(() => {
@@ -765,11 +772,11 @@ export const OutreachRegisterForm = ({
               className={`flex flex-col gap-4 ${step === 3 ? "" : "hidden"}`}
             >
               <Label>Kindly Upload Proof of Payment</Label>
-                <FileUpload
-                  uploadUrl={`/api/v1/payments/proof?id=${payment?.id || ''}`}
-                  onUploadFinish={handleFileUpload}
-                  behaviour="add"
-                />
+              <FileUpload
+                uploadUrl={`/api/v1/payments/proof?id=${payment?.id || ""}`}
+                onUploadFinish={handleFileUpload}
+                behaviour="add"
+              />
             </motion.div>
           </AnimatePresence>
 
@@ -780,7 +787,12 @@ export const OutreachRegisterForm = ({
               </Button>
             )}
             {step < 3 ? (
-              <Button onClick={() => setStep(step + 1)} disabled={step == 2 && (paidAmountState ?? 0) < 500}>{step == 2 ? "I've made the transfer": "Next"}</Button>
+              <Button
+                onClick={() => setStep(step + 1)}
+                disabled={step == 2 && (paidAmountState ?? 0) < 500}
+              >
+                {step == 2 ? "I've made the transfer" : "Next"}
+              </Button>
             ) : (
               // <Button
               //   type="submit"

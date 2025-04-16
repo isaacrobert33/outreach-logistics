@@ -60,22 +60,21 @@ export const GET = async (req: NextRequest) => {
 //   });
 //   const id = `${crew.slice(0, 3).toUpperCase()}/${formatNumber(paymentCount + 1)}`;
 //   const idExists = !!(await prisma.payment.count({ where: { id } }));
-  
+
 //   return idExists ? `${crew.slice(0, 3).toUpperCase()}/${formatNumber(paymentCount + 2)}`: id;
 // };
-
 
 async function generateNextId(outreachId?: string, crew?: string) {
   // Get the last created record by ID (assuming sequential creation)
   const lastRecord = await prisma.payment.findFirst({
-    where: {crew: crew ?? "nocrew", outreachId},
-    orderBy: { createdAt: 'desc' },
+    where: { crew: crew ?? "nocrew", outreachId },
+    orderBy: { createdAt: "desc" },
   });
 
   let newId;
   if (lastRecord && lastRecord.id) {
-    const [prefix, numPart] = lastRecord.id.split('/');
-    const nextNumber = String(parseInt(numPart, 10) + 1).padStart(3, '0');
+    const [prefix, numPart] = lastRecord.id.split("/");
+    const nextNumber = String(parseInt(numPart, 10) + 1).padStart(3, "0");
     newId = `${prefix}/${nextNumber}`;
   } else {
     // If no record exists yet
@@ -85,27 +84,30 @@ async function generateNextId(outreachId?: string, crew?: string) {
   return newId;
 }
 
-
 export const POST = async (req: NextRequest) => {
-   const body = await req.json();
+  const body = await req.json();
 
-    const validatedBody = PaymentSchema.parse(body) as any;
-    
-    const validateUniqueness = await prisma.payment.count({ where: { OR: [{email: validatedBody.email}, {phone: validatedBody.phone}]}});
+  const validatedBody = PaymentSchema.parse(body) as any;
 
-    if (validateUniqueness) {
-      return Response({
-        status: 400,
-        message: "Email or Phone number already exists.",
-      });
-    }
+  const validateUniqueness = await prisma.payment.count({
+    where: {
+      OR: [{ email: validatedBody.email }, { phone: validatedBody.phone }],
+    },
+  });
 
-    const paymentId = await await generateNextId(
-      validatedBody.outreachId,
-      validatedBody.crew
-    )
-    
-    try {
+  if (validateUniqueness) {
+    return Response({
+      status: 400,
+      message: "Email or Phone number already exists.",
+    });
+  }
+
+  const paymentId = await generateNextId(
+    validatedBody.outreachId,
+    validatedBody.crew
+  );
+
+  try {
     const payment = await prisma.payment.create({
       data: {
         ...validatedBody,
