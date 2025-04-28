@@ -41,12 +41,13 @@ export async function GET(req: NextRequest) {
         phone: true,
         crew: true,
         gender: true,
+        level: true,
         paymentStatus: true,
         paidAmount: true,
         createdAt: true,
       },
-    }); // Adjust model name
-
+    });
+    
     if (!records.length) {
       return NextResponse.json(
         { message: "No records found" },
