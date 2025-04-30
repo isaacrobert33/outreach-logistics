@@ -165,11 +165,11 @@ export default function LandingPage() {
                   Learn More
                 </Button> */}
               </div>
-              <div className="flex flex-row gap-3 items-start sm:items-center mt-12 text-gray-500 dark:text-gray-400 text-sm">
+              {/* <div className="flex flex-row gap-3 items-start sm:items-center mt-12 text-gray-500 dark:text-gray-400 text-sm">
                 <Info className="w-8 h-8 sm:w-4 sm:h-4" />
                 Or if you have an existing payment record, click below to top-up
                 or complete your payment.
-              </div>
+              </div> */}
 
               <Button
                 className="mt-4 md:flex bg-gray-600 hover:bg-green-500"
@@ -180,7 +180,7 @@ export default function LandingPage() {
                 Top-Up Now
                 <PlusIcon className="ml-2 h-4 w-4" />
                 </Button>
-                <p className="flex flex-row items-center gap-2"><AlertOctagon className="w-5"/>Registrations are closed, see you next year!</p>
+                <p className="flex flex-row items-center gap-2 my-4"><AlertOctagon className="w-5 text-red-600"/>Registrations are closed, see you next year!</p>
             </div>
             <div
               className="mx-auto lg:mx-0 relative"
