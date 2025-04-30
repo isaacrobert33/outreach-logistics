@@ -17,6 +17,7 @@ import {
   SquareUserIcon,
   Info,
   PlusIcon,
+  AlertOctagon,
 } from "lucide-react";
 import {
   SiFacebook,
@@ -153,8 +154,9 @@ export default function LandingPage() {
               <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:items-center">
                 <Button
                   size="lg"
-                  className="font-medium"
+                  className="font-medium bg-gray-500"
                   onClick={() => setRegisterDialog(true)}
+                  disabled
                 >
                   Register Now
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -170,13 +172,15 @@ export default function LandingPage() {
               </div>
 
               <Button
-                className="mt-4 md:flex bg-green-600 hover:bg-green-500"
+                className="mt-4 md:flex bg-gray-600 hover:bg-green-500"
                 onClick={() => setTopupDialog(true)}
-                size={"lg"}
+                  size={"lg"}
+                  disabled
               >
                 Top-Up Now
                 <PlusIcon className="ml-2 h-4 w-4" />
-              </Button>
+                </Button>
+                <p className="flex flex-row items-center gap-2"><AlertOctagon className="w-5"/>Registrations are closed, see you next year!</p>
             </div>
             <div
               className="mx-auto lg:mx-0 relative"
