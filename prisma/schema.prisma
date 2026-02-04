@@ -39,11 +39,13 @@ model Outreach {
   description String?
   location    String?
   date        String?
+  flyer       String?
   fee         Float?        @default(0.0)
   createdAt   DateTime  @default(now()) @map(name: "created_at")
   updatedAt   DateTime  @updatedAt @map(name: "updated_at")
   Payment     Payment[]
   BankDetail  BankDetail[]
+  isActive   Boolean?   @default(true)
 }
 
 model BankDetail {

@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 
 export const GET = async (
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) => {
   const { id } = await params;
 
@@ -18,11 +18,12 @@ export const GET = async (
 
 export const PATCH = async (
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) => {
   const { id } = await params;
 
-  const { theme, description, location, date, fee } = await req.json();
+  const { theme, description, location, date, fee, isActive } =
+    await req.json();
   const outreach = await prisma.outreach.update({
     where: {
       id,
@@ -33,6 +34,7 @@ export const PATCH = async (
       location,
       date,
       fee,
+      isActive,
     },
   });
   return Response({ status: 202, data: outreach });
@@ -40,7 +42,7 @@ export const PATCH = async (
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
 

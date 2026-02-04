@@ -12,13 +12,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 import { OutreachType } from "@/lib/types/common";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { OutreachSchema } from "@/lib/schema";
+import FileUpload from "@/components/file-uploader";
+import { ExtFile } from "@files-ui/react";
+import { CldImage } from "next-cloudinary";
+import { Switch } from "@/components/ui/switch";
 
 export const CreateOutreachForm = ({
   open,
@@ -159,8 +163,7 @@ export const CreateOutreachForm = ({
             </Button>
             <Button
               onClick={handleSubmit(onSubmit)}
-              disabled={createMutation.isPending}
-            >
+              disabled={createMutation.isPending}>
               {createMutation.isPending ? "Creating..." : "Create Outreach"}
             </Button>
           </DialogFooter>
@@ -212,9 +215,10 @@ export const UpdateOutreachForm = ({
 
   useEffect(() => {
     if (outreach) {
-      reset(outreach);
+      reset({ ...outreach, flyer: undefined });
     }
   }, [outreach]);
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -226,9 +230,9 @@ export const UpdateOutreachForm = ({
             </DialogDescription>
           </DialogHeader>
           {outreach && (
-            <div className="grid gap-4 py-4">
+            <div className="grid gap-6 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="update-theme" className="text-right">
+                <Label htmlFor="update-theme" className="text-left">
                   Outreach Theme
                 </Label>
                 <div className="col-span-3">
@@ -314,6 +318,46 @@ export const UpdateOutreachForm = ({
                   )}
                 </div>
               </div>
+
+              <Controller
+                name="isActive"
+                control={control}
+                render={({ field }) => (
+                  <div className="flex gap-18 items-center space-x-2">
+                    <Label htmlFor="active-status">Active</Label>
+                    <Switch
+                      id="active-status"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </div>
+                )}
+              />
+              <p className="text-bold">Outreach Flyer</p>
+              {outreach?.flyer && (
+                <div>
+                  <CldImage
+                    width="150"
+                    height="200"
+                    src={outreach?.flyer}
+                    sizes="100vw"
+                    className="mx-auto aspect-video overflow-hidden rounded-xl object-cover opacity-45 h-80"
+                    alt={`Outreach flyer`}
+                  />
+                </div>
+              )}
+              <div className="flex flex-col gap-4">
+                <Label>
+                  {outreach?.flyer
+                    ? `Change flyer`
+                    : "Add a flyer to this outreach"}
+                </Label>
+                <FileUpload
+                  uploadUrl={`/api/v1/outreach/${outreach.id}/flyer`}
+                  // onUploadFinish=
+                  behaviour="add"
+                />
+              </div>
             </div>
           )}
           <DialogFooter>
@@ -322,8 +366,7 @@ export const UpdateOutreachForm = ({
             </Button>
             <Button
               onClick={handleSubmit(onSubmit)}
-              disabled={updateMutation.isPending}
-            >
+              disabled={updateMutation.isPending}>
               {updateMutation.isPending ? "Saving..." : "Save Changes"}
             </Button>
           </DialogFooter>

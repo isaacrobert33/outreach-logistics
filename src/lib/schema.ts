@@ -17,7 +17,7 @@ export const PaymentSchema = z.object({
       z
         .string()
         .min(3)
-        .transform((arg) => parseFloat(arg))
+        .transform((arg) => parseFloat(arg)),
     )
     .optional(),
 
@@ -45,6 +45,8 @@ export const OutreachSchema = z.object({
   theme: z.string(),
   description: z.string().optional(),
   location: z.string().optional(),
+  isActive: z.boolean().optional(),
+  flyer: z.string().optional().nullable(),
   date: z.string().optional(),
   fee: z
     .number()
