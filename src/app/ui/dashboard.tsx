@@ -104,6 +104,7 @@ export default function Dashboard() {
       return response.json();
     },
   });
+  const outreachList: OutreachType[] = outreachQ?.data?.data ?? [];
 
   const banksQ = useBanks();
 
@@ -150,6 +151,12 @@ export default function Dashboard() {
     if (!confirm) return;
     deleteMutation.mutate(id);
   };
+
+  useEffect(() => {
+    if (outreachList?.length) {
+      setOutreachFilter(outreachList[0]?.id);
+    }
+  }, [outreachList, setOutreachFilter]);
 
   useEffect(() => {
     if (session.status === "unauthenticated") {
@@ -319,13 +326,11 @@ export default function Dashboard() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="*">All Outreaches</SelectItem>
-                  {outreachQ?.data?.data?.map(
-                    (item: OutreachType, index: number) => (
-                      <SelectItem key={index} value={item.id}>
-                        {item.theme}
-                      </SelectItem>
-                    ),
-                  )}
+                  {outreachList?.map((item: OutreachType, index: number) => (
+                    <SelectItem key={index} value={item.id}>
+                      {item.theme}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
 
