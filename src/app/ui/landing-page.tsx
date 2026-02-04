@@ -247,7 +247,7 @@ export default function LandingPage() {
               </p>
               <div className="flex-col gap-8 md:flex-row flex-wrap">
                 {banksQ?.data?.length &&
-                  banksQ?.data?.map((bank, index) => (
+                  banksQ?.data?.map?.((bank, index) => (
                     <div
                       className="mt-8 grid gap-4 rounded-lg bg-primary/6 p-5"
                       key={index}>

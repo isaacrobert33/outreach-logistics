@@ -411,8 +411,10 @@ export const OutreachRegisterForm = ({
     },
   });
 
-  const paidAmountState = useWatch({ control, name: "paidAmount" });
+  const name = useWatch({ control, name: "name" });
+  const phone = useWatch({ control, name: "phone" });
 
+  const paidAmountState = useWatch({ control, name: "paidAmount" });
   const banksQ = useBanks();
 
   const handleCopySuccess = () => {
@@ -439,7 +441,9 @@ export const OutreachRegisterForm = ({
       handleRegistrationDone();
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toast("Error", { description: error.response?.data?.message || "" });
+      toast("Error", {
+        description: error.response?.data?.message || error?.message,
+      });
     },
   });
 
@@ -499,6 +503,8 @@ export const OutreachRegisterForm = ({
     return () => subscription.unsubscribe();
   }, [watch]);
 
+  console.log(phone, name);
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -519,8 +525,8 @@ export const OutreachRegisterForm = ({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
               className={`${step === 1 ? "" : "hidden"}`}>
-              <div className="flex flex-col gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
+              <div className="flex flex-col gap-7 py-4">
+                <div className="grid grid-cols-4 items-start gap-4">
                   <Label htmlFor="new-name" className="text-left">
                     Name <span className="text-red-500">*</span>
                   </Label>
@@ -531,6 +537,7 @@ export const OutreachRegisterForm = ({
                       required
                       className={errors?.name ? "border-red-500" : ""}
                     />
+                    <p className="text-muted-foreground text-sm">(required)</p>
                     {errors?.name && (
                       <p className="text-red-500 text-xs mt-1">
                         {errors?.name?.message}
@@ -551,6 +558,8 @@ export const OutreachRegisterForm = ({
                       className={errors?.phone ? "border-red-500" : ""}
                       required
                     />
+                    <p className="text-muted-foreground text-sm">(required)</p>
+
                     {errors.phone && (
                       <p className="text-red-500 text-xs mt-1">
                         {errors?.phone?.message}
@@ -575,7 +584,7 @@ export const OutreachRegisterForm = ({
                     )}
                   </div>
                 </div>
-                <div className="flex flex-row items-center gap-24">
+                <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="new-gender" className="text-left">
                     Gender
                   </Label>
@@ -588,7 +597,7 @@ export const OutreachRegisterForm = ({
                       <Select
                         value={field.value}
                         onValueChange={(value) => field.onChange(value)}>
-                        <SelectTrigger className="col-span-3">
+                        <SelectTrigger className="col-span-3 w-full">
                           <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
                         <SelectContent>
@@ -602,34 +611,39 @@ export const OutreachRegisterForm = ({
                     )}
                   />
                 </div>
-                <div className="flex flex-col items-start gap-4">
+                <div className="grid grid-cols-4 items-start gap-4">
                   <Label htmlFor="new-unit" className="text-left leading-5">
-                    Unit (Kindly choose President if you are a non worker)
+                    Unit{" "}
                   </Label>
-                  <Controller
-                    name="unit"
-                    control={control}
-                    defaultValue="President"
-                    render={({ field }) => (
-                      <Select
-                        value={field.value || undefined}
-                        onValueChange={(value) => field.onChange(value)}>
-                        <SelectTrigger className="w-2/4">
-                          <SelectValue placeholder="Select unit" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {units?.map((unit, index) => (
-                            <SelectItem
-                              key={unit}
-                              className="capitalize"
-                              value={unit}>
-                              {unit}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
+                  <div className="flex flex-col gap-1 col-span-3">
+                    <Controller
+                      name="unit"
+                      control={control}
+                      defaultValue="President"
+                      render={({ field }) => (
+                        <Select
+                          value={field.value || undefined}
+                          onValueChange={(value) => field.onChange(value)}>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select unit" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {units?.map((unit, index) => (
+                              <SelectItem
+                                key={unit}
+                                className="capitalize"
+                                value={unit}>
+                                {unit}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    <span className="text-muted-foreground italic">
+                      (Kindly choose <b>President</b> if you are a non-worker)
+                    </span>
+                  </div>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="new-level" className="text-left">
@@ -788,7 +802,11 @@ export const OutreachRegisterForm = ({
             {step < 3 ? (
               <Button
                 onClick={() => setStep(step + 1)}
-                disabled={step == 2 && (paidAmountState ?? 0) < 500}>
+                disabled={
+                  (step == 2 && (paidAmountState ?? 0) < 500) ||
+                  (name?.length ?? 0) < 3 ||
+                  (phone?.length ?? 0) < 8
+                }>
                 {step == 2 ? "I've made the transfer" : "Next"}
               </Button>
             ) : (
@@ -1118,7 +1136,7 @@ export const UpdatePaymentForm = ({
                         <SelectValue placeholder="Select option" />
                       </SelectTrigger>
                       <SelectContent>
-                        {banksQ?.data?.map((item, index: number) => (
+                        {banksQ?.data?.map?.((item, index: number) => (
                           <SelectItem key={index} value={item.id}>
                             {item.name} - {item.bank}
                           </SelectItem>

@@ -336,7 +336,7 @@ export default function Dashboard() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="*">All Banks</SelectItem>
-                  {banksQ?.data?.map((item: BankType, index: number) => (
+                  {banksQ?.data?.map?.((item: BankType, index: number) => (
                     <SelectItem key={index} value={item.id}>
                       {item.name} - {item.bank}
                     </SelectItem>
