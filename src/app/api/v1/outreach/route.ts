@@ -3,7 +3,11 @@ import { Response } from "@/lib/utils";
 import { NextRequest } from "next/server";
 
 export const GET = async () => {
-  const records = await prisma.outreach.findMany();
+  const records = await prisma.outreach.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
   return Response({ status: 200, data: records });
 };
 

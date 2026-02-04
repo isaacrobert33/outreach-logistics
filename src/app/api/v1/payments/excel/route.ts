@@ -47,11 +47,11 @@ export async function GET(req: NextRequest) {
         createdAt: true,
       },
     });
-    
+
     if (!records.length) {
       return NextResponse.json(
         { message: "No records found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
     worksheet.addRow(Object.keys(records[0])); // Assuming non-empty records
 
     // Add data rows
-    records.forEach((record) => {
+    records.forEach((record: any) => {
       worksheet.addRow(Object.values(record));
     });
 
@@ -83,7 +83,7 @@ export async function GET(req: NextRequest) {
     // console.error("Error generating Excel file:", error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

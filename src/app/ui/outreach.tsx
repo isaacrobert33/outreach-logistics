@@ -28,7 +28,7 @@ import { OutreachShare } from "./outreach/share";
 
 export default function Outreachs() {
   const [selectedPayment, setSelectedPayment] = useState<OutreachType | null>(
-    null
+    null,
   );
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
@@ -65,7 +65,7 @@ export default function Outreachs() {
 
   const handleDelete = (id: string) => {
     const confirm = window.confirm(
-      `Are you sure you want to delete this record?`
+      `Are you sure you want to delete this record?`,
     );
     if (!confirm) return;
     deleteMutation.mutate(id);
@@ -83,8 +83,7 @@ export default function Outreachs() {
           <Button
             size="lg"
             onClick={openCreateDialog}
-            className="cursor-pointer"
-          >
+            className="cursor-pointer">
             <PlusIcon className="h-4 w-4 sm:mr-2" />
             <span className="hidden sm:inline">Add Outreach</span>
           </Button>
@@ -128,8 +127,7 @@ export default function Outreachs() {
                     <TableRow>
                       <TableCell
                         colSpan={6}
-                        className="text-center py-8 text-gray-500 dark:text-gray-400"
-                      >
+                        className="text-center py-8 text-gray-500 dark:text-gray-400">
                         No outreachs found.
                       </TableCell>
                     </TableRow>
@@ -155,20 +153,18 @@ export default function Outreachs() {
                           {outreach.createdAt}
                         </TableCell>
                         <TableCell className="text-right">
-                          <OutreachShare outreach={outreach} />
+                          {/* <OutreachShare outreach={outreach} /> */}
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => openUpdateDialog(outreach)}
-                          >
+                            onClick={() => openUpdateDialog(outreach)}>
                             <Pencil className="h-4 w-4" />
                             <span className="sr-only">Edit</span>
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleDelete(outreach.id)}
-                          >
+                            onClick={() => handleDelete(outreach.id)}>
                             <Trash2 className="h-4 w-4 text-red-500" />
                             <span className="sr-only">Delete</span>
                           </Button>

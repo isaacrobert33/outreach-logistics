@@ -182,8 +182,7 @@ export const CreatePaymentForm = ({
                 render={({ field }) => (
                   <Select
                     value={field.value}
-                    onValueChange={(value) => field.onChange(value)}
-                  >
+                    onValueChange={(value) => field.onChange(value)}>
                     <SelectTrigger className="col-span-3">
                       <SelectValue placeholder="Select gender" />
                     </SelectTrigger>
@@ -207,8 +206,7 @@ export const CreatePaymentForm = ({
                 render={({ field }) => (
                   <Select
                     value={field.value || undefined}
-                    onValueChange={(value) => field.onChange(value)}
-                  >
+                    onValueChange={(value) => field.onChange(value)}>
                     <SelectTrigger className="col-span-3">
                       <SelectValue placeholder="Select unit" />
                     </SelectTrigger>
@@ -217,8 +215,7 @@ export const CreatePaymentForm = ({
                         <SelectItem
                           key={unit}
                           className="capitalize"
-                          value={unit}
-                        >
+                          value={unit}>
                           {unit}
                         </SelectItem>
                       ))}
@@ -237,8 +234,7 @@ export const CreatePaymentForm = ({
                 render={({ field }) => (
                   <Select
                     value={field.value || undefined}
-                    onValueChange={(value) => field.onChange(value)}
-                  >
+                    onValueChange={(value) => field.onChange(value)}>
                     <SelectTrigger className="col-span-3">
                       <SelectValue placeholder="Select level" />
                     </SelectTrigger>
@@ -247,8 +243,7 @@ export const CreatePaymentForm = ({
                         <SelectItem
                           key={level}
                           className="capitalize"
-                          value={level}
-                        >
+                          value={level}>
                           {level}
                         </SelectItem>
                       ))}
@@ -290,8 +285,7 @@ export const CreatePaymentForm = ({
                 render={({ field }) => (
                   <Select
                     value={field.value}
-                    onValueChange={(value) => field.onChange(value)}
-                  >
+                    onValueChange={(value) => field.onChange(value)}>
                     <SelectTrigger className="col-span-3">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
@@ -300,8 +294,7 @@ export const CreatePaymentForm = ({
                         <SelectItem
                           className="capitalize"
                           key={status}
-                          value={status}
-                        >
+                          value={status}>
                           {status.toLowerCase().replace("_", " ")}
                         </SelectItem>
                       ))}
@@ -319,8 +312,7 @@ export const CreatePaymentForm = ({
                 render={({ field }) => (
                   <Select
                     value={field.value || ""}
-                    onValueChange={(value) => field.onChange(value)}
-                  >
+                    onValueChange={(value) => field.onChange(value)}>
                     <SelectTrigger className="col-span-3">
                       <SelectValue placeholder="Select outreach" />
                     </SelectTrigger>
@@ -330,7 +322,7 @@ export const CreatePaymentForm = ({
                           <SelectItem key={index} value={item.id}>
                             {item.theme}
                           </SelectItem>
-                        )
+                        ),
                       )}
                     </SelectContent>
                   </Select>
@@ -347,19 +339,16 @@ export const CreatePaymentForm = ({
                 render={({ field }) => (
                   <Select
                     value={field.value || ""}
-                    onValueChange={(value) => field.onChange(value)}
-                  >
+                    onValueChange={(value) => field.onChange(value)}>
                     <SelectTrigger className="col-span-3">
                       <SelectValue placeholder="Select option" />
                     </SelectTrigger>
                     <SelectContent>
-                      {banksQ?.data?.data?.map(
-                        (item: BankType, index: number) => (
-                          <SelectItem key={index} value={item.id}>
-                            {item.name} - {item.bank}
-                          </SelectItem>
-                        )
-                      )}
+                      {banksQ?.data?.map?.((item: BankType, index: number) => (
+                        <SelectItem key={index} value={item.id}>
+                          {item.name} - {item.bank}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 )}
@@ -372,8 +361,7 @@ export const CreatePaymentForm = ({
             </Button>
             <Button
               onClick={handleSubmit(onSubmit)}
-              disabled={createMutation.isPending}
-            >
+              disabled={createMutation.isPending}>
               {createMutation.isPending ? "Creating..." : "Create Payment"}
             </Button>
           </DialogFooter>
@@ -480,10 +468,10 @@ export const OutreachRegisterForm = ({
   }, [outreach]);
 
   useEffect(() => {
-    if (banksQ?.data?.data?.length) {
-      setValue("bankId", banksQ?.data?.data[0].id);
+    if (banksQ?.data?.length) {
+      setValue("bankId", banksQ?.data[0].id);
     }
-  }, [banksQ?.data?.data?.length]);
+  }, [banksQ?.data?.length]);
 
   useEffect(() => {
     if (Object.keys(errors).length) {
@@ -530,8 +518,7 @@ export const OutreachRegisterForm = ({
               initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
-              className={`${step === 1 ? "" : "hidden"}`}
-            >
+              className={`${step === 1 ? "" : "hidden"}`}>
               <div className="flex flex-col gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="new-name" className="text-left">
@@ -600,8 +587,7 @@ export const OutreachRegisterForm = ({
                     render={({ field }) => (
                       <Select
                         value={field.value}
-                        onValueChange={(value) => field.onChange(value)}
-                      >
+                        onValueChange={(value) => field.onChange(value)}>
                         <SelectTrigger className="col-span-3">
                           <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
@@ -627,8 +613,7 @@ export const OutreachRegisterForm = ({
                     render={({ field }) => (
                       <Select
                         value={field.value || undefined}
-                        onValueChange={(value) => field.onChange(value)}
-                      >
+                        onValueChange={(value) => field.onChange(value)}>
                         <SelectTrigger className="w-2/4">
                           <SelectValue placeholder="Select unit" />
                         </SelectTrigger>
@@ -637,8 +622,7 @@ export const OutreachRegisterForm = ({
                             <SelectItem
                               key={unit}
                               className="capitalize"
-                              value={unit}
-                            >
+                              value={unit}>
                               {unit}
                             </SelectItem>
                           ))}
@@ -657,8 +641,7 @@ export const OutreachRegisterForm = ({
                     render={({ field }) => (
                       <Select
                         value={field.value || undefined}
-                        onValueChange={(value) => field.onChange(value)}
-                      >
+                        onValueChange={(value) => field.onChange(value)}>
                         <SelectTrigger className="col-span-3">
                           <SelectValue placeholder="Select level" />
                         </SelectTrigger>
@@ -667,8 +650,7 @@ export const OutreachRegisterForm = ({
                             <SelectItem
                               key={level}
                               className="capitalize"
-                              value={level}
-                            >
+                              value={level}>
                               {level}
                             </SelectItem>
                           ))}
@@ -684,8 +666,7 @@ export const OutreachRegisterForm = ({
               initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
-              className={`${step === 2 ? "" : "hidden"}`}
-            >
+              className={`${step === 2 ? "" : "hidden"}`}>
               <div className="flex flex-col gap-8 py-4">
                 <div className="flex flex-col gap-4">
                   <Label htmlFor="new-amount" className="text-left">
@@ -712,83 +693,71 @@ export const OutreachRegisterForm = ({
                 <div className="flex flex-col gap-4 w-full">
                   <Label className="text-left">
                     Payment{" "}
-                    {(banksQ?.data?.data?.length ?? 0) > 1
-                      ? "Options"
-                      : "Details"}
+                    {(banksQ?.data?.length ?? 0) > 1 ? "Options" : "Details"}
                   </Label>
-                  {banksQ?.data?.data?.length && (
+                  {banksQ?.data?.length && (
                     <RadioGroup
-                      defaultValue={banksQ?.data?.data[0].id}
-                      onValueChange={(v) => setValue("bankId", v)}
-                    >
-                      {banksQ?.data?.data?.map(
-                        (item: BankType, index: number) => (
-                          <div
-                            key={`bank-${index}`}
-                            className="flex flex-row gap-8 items-center"
-                          >
-                            {banksQ?.data?.data?.length > 1 && (
-                              <RadioGroupItem value={item.id} id={item.id} />
-                            )}
-                            <div className="flex flex-col gap-4 bg-gray-300/10 p-2 rounded-md border-1 border-gray-500 w-full">
-                              <div className="flex flex-col gap-2 min-w-32">
-                                <p
-                                  className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                                >
-                                  Bank Name
-                                </p>
-                                <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
-                                  {item.bank}
-                                </div>
+                      defaultValue={banksQ?.data?.[0].id}
+                      onValueChange={(v) => setValue("bankId", v)}>
+                      {banksQ?.data?.map?.((item: BankType, index: number) => (
+                        <div
+                          key={`bank-${index}`}
+                          className="flex flex-row gap-8 items-center">
+                          {banksQ?.data?.length > 1 && (
+                            <RadioGroupItem value={item.id} id={item.id} />
+                          )}
+                          <div className="flex flex-col gap-4 bg-gray-300/10 p-2 rounded-md border border-gray-500 w-full">
+                            <div className="flex flex-col gap-2 min-w-32">
+                              <p
+                                className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}>
+                                Bank Name
+                              </p>
+                              <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                                {item.bank}
                               </div>
-                              <div className="flex flex-col gap-2 min-w-32">
-                                <p
-                                  className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                                >
-                                  Account No.
-                                </p>
-                                <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
-                                  <div className="flex flex-row items-center gap-12">
-                                    {/* <Input
+                            </div>
+                            <div className="flex flex-col gap-2 min-w-32">
+                              <p
+                                className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}>
+                                Account No.
+                              </p>
+                              <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                                <div className="flex flex-row items-center gap-12">
+                                  {/* <Input
                                       defaultValue={}
                                       readOnly
                                     /> */}
-                                    <span className="font-bold text-lg">
-                                      {item.acctNo}
-                                    </span>
-                                    <Button
-                                      onClick={() =>
-                                        copyToClipboard(
-                                          item.acctNo,
-                                          handleCopySuccess
-                                        )
-                                      }
-                                      size="sm"
-                                      className="px-3"
-                                    >
-                                      <span className="sr-only">
-                                        {copyText}
-                                      </span>
-                                      <CopyIcon />
-                                      {copyText}
-                                    </Button>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="flex flex-col gap-2 min-w-32">
-                                <p
-                                  className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                                >
-                                  Account Name
-                                </p>
-                                <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
-                                  {item?.name}
+                                  <span className="font-bold text-lg">
+                                    {item.acctNo}
+                                  </span>
+                                  <Button
+                                    onClick={() =>
+                                      copyToClipboard(
+                                        item.acctNo,
+                                        handleCopySuccess,
+                                      )
+                                    }
+                                    size="sm"
+                                    className="px-3">
+                                    <span className="sr-only">{copyText}</span>
+                                    <CopyIcon />
+                                    {copyText}
+                                  </Button>
                                 </div>
                               </div>
                             </div>
+                            <div className="flex flex-col gap-2 min-w-32">
+                              <p
+                                className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}>
+                                Account Name
+                              </p>
+                              <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
+                                {item?.name}
+                              </div>
+                            </div>
                           </div>
-                        )
-                      )}
+                        </div>
+                      ))}
                     </RadioGroup>
                   )}
                 </div>
@@ -800,8 +769,7 @@ export const OutreachRegisterForm = ({
               initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
-              className={`flex flex-col gap-4 ${step === 3 ? "" : "hidden"}`}
-            >
+              className={`flex flex-col gap-4 ${step === 3 ? "" : "hidden"}`}>
               <Label>Kindly Upload Proof of Payment</Label>
               <FileUpload
                 uploadUrl={`/api/v1/payments/proof?id=${payment?.id || ""}`}
@@ -820,8 +788,7 @@ export const OutreachRegisterForm = ({
             {step < 3 ? (
               <Button
                 onClick={() => setStep(step + 1)}
-                disabled={step == 2 && (paidAmountState ?? 0) < 500}
-              >
+                disabled={step == 2 && (paidAmountState ?? 0) < 500}>
                 {step == 2 ? "I've made the transfer" : "Next"}
               </Button>
             ) : (
@@ -888,7 +855,7 @@ export const UpdatePaymentForm = ({
 
   const handleApprovePending = () => {
     const confirm = window.confirm(
-      "Are you sure you want to proceed with approving this pending amount ?"
+      "Are you sure you want to proceed with approving this pending amount ?",
     );
     if (!confirm) return;
 
@@ -999,8 +966,7 @@ export const UpdatePaymentForm = ({
                   render={({ field }) => (
                     <Select
                       value={field.value}
-                      onValueChange={(value) => field.onChange(value)}
-                    >
+                      onValueChange={(value) => field.onChange(value)}>
                       <SelectTrigger className="col-span-3">
                         <SelectValue placeholder="Select Gender" />
                       </SelectTrigger>
@@ -1026,8 +992,7 @@ export const UpdatePaymentForm = ({
                   render={({ field }) => (
                     <Select
                       value={field.value || undefined}
-                      onValueChange={(value) => field.onChange(value)}
-                    >
+                      onValueChange={(value) => field.onChange(value)}>
                       <SelectTrigger className="col-span-3">
                         <SelectValue placeholder="Select unit" />
                       </SelectTrigger>
@@ -1036,8 +1001,7 @@ export const UpdatePaymentForm = ({
                           <SelectItem
                             key={unit}
                             className="capitalize"
-                            value={unit}
-                          >
+                            value={unit}>
                             {unit}
                           </SelectItem>
                         ))}
@@ -1050,8 +1014,7 @@ export const UpdatePaymentForm = ({
                 <div className="flex flex-row gap-2 items-center">
                   <Badge
                     variant={"outline"}
-                    className="bg-amber-500 p-3 font-bold"
-                  >
+                    className="bg-amber-500 p-3 font-bold">
                     <PinIcon />
                     Pending Amount: NGN{payment?.pendingAmount}
                   </Badge>
@@ -1059,8 +1022,7 @@ export const UpdatePaymentForm = ({
                     // size={"icon"}
                     variant={"outline"}
                     onClick={handleApprovePending}
-                    className="bg-green-500/30 rounded-full border-gray-300"
-                  >
+                    className="bg-green-500/30 rounded-full border-gray-300">
                     <CheckIcon className="text-white" />
                     Approve
                   </Button>
@@ -1098,8 +1060,7 @@ export const UpdatePaymentForm = ({
                   render={({ field }) => (
                     <Select
                       value={field.value}
-                      onValueChange={(value) => field.onChange(value)}
-                    >
+                      onValueChange={(value) => field.onChange(value)}>
                       <SelectTrigger className="col-span-3">
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
@@ -1108,8 +1069,7 @@ export const UpdatePaymentForm = ({
                           <SelectItem
                             className="capitalize"
                             key={status}
-                            value={status}
-                          >
+                            value={status}>
                             {status.toLowerCase().replace("_", " ")}
                           </SelectItem>
                         ))}
@@ -1127,8 +1087,7 @@ export const UpdatePaymentForm = ({
                   render={({ field }) => (
                     <Select
                       value={field.value || ""}
-                      onValueChange={(value) => field.onChange(value)}
-                    >
+                      onValueChange={(value) => field.onChange(value)}>
                       <SelectTrigger className="col-span-3">
                         <SelectValue placeholder="Select outreach" />
                       </SelectTrigger>
@@ -1138,7 +1097,7 @@ export const UpdatePaymentForm = ({
                             <SelectItem key={index} value={item.id}>
                               {item.theme}
                             </SelectItem>
-                          )
+                          ),
                         )}
                       </SelectContent>
                     </Select>
@@ -1154,19 +1113,16 @@ export const UpdatePaymentForm = ({
                   render={({ field }) => (
                     <Select
                       value={field.value || ""}
-                      onValueChange={(value) => field.onChange(value)}
-                    >
+                      onValueChange={(value) => field.onChange(value)}>
                       <SelectTrigger className="col-span-3">
                         <SelectValue placeholder="Select option" />
                       </SelectTrigger>
                       <SelectContent>
-                        {banksQ?.data?.data.map(
-                          (item: BankType, index: number) => (
-                            <SelectItem key={index} value={item.id}>
-                              {item.name} - {item.bank}
-                            </SelectItem>
-                          )
-                        )}
+                        {banksQ?.data?.map((item, index: number) => (
+                          <SelectItem key={index} value={item.id}>
+                            {item.name} - {item.bank}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   )}
@@ -1200,8 +1156,7 @@ export const UpdatePaymentForm = ({
             </Button>
             <Button
               onClick={handleSubmit(onSubmit)}
-              disabled={updateMutation.isPending}
-            >
+              disabled={updateMutation.isPending}>
               {updateMutation.isPending ? "Saving..." : "Save Changes"}
             </Button>
           </DialogFooter>
@@ -1261,7 +1216,7 @@ export const PaymentTopupForm = ({
     setNotFound(false);
     try {
       const response = await axios.get(
-        `/api/v1/payments/search?q=${query}&outreachId=${outreachId}`
+        `/api/v1/payments/search?q=${query}&outreachId=${outreachId}`,
       );
       setPayment(response.data?.data);
       setIsLoading(false);
@@ -1300,8 +1255,7 @@ export const PaymentTopupForm = ({
                 key="step1"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 100 }}
-              >
+                exit={{ opacity: 0, x: 100 }}>
                 <div className="flex flex-col gap-4 py-4">
                   <div className="flex flex-col items-start gap-4">
                     <Label htmlFor="query" className="text-left">
@@ -1318,8 +1272,7 @@ export const PaymentTopupForm = ({
                     />
                     <Button
                       onClick={fetchPayment}
-                      disabled={isLoading || !query}
-                    >
+                      disabled={isLoading || !query}>
                       {isLoading ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -1333,8 +1286,7 @@ export const PaymentTopupForm = ({
                       <div className="flex flex-col gap-4 bg-gray-300/10 p-2 rounded-md border-1 border-gray-500 w-full">
                         <div className="flex flex-col gap-2 min-w-32">
                           <p
-                            className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                          >
+                            className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}>
                             Name
                           </p>
                           <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
@@ -1343,8 +1295,7 @@ export const PaymentTopupForm = ({
                         </div>
                         <div className="flex flex-col gap-2 min-w-32">
                           <p
-                            className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                          >
+                            className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}>
                             Payment Status
                           </p>
                           <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
@@ -1353,8 +1304,7 @@ export const PaymentTopupForm = ({
                         </div>
                         <div className="flex flex-col gap-2 min-w-32">
                           <p
-                            className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                          >
+                            className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}>
                             Paid Amount
                           </p>
                           <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
@@ -1378,8 +1328,7 @@ export const PaymentTopupForm = ({
                 key="step2"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 100 }}
-              >
+                exit={{ opacity: 0, x: 100 }}>
                 <div className="flex flex-col gap-8 py-4">
                   <div className="flex flex-col gap-4 max-w-2/4">
                     <Label htmlFor="new-amount" className="text-left">
@@ -1398,9 +1347,7 @@ export const PaymentTopupForm = ({
                   <div className="flex flex-col gap-4 w-full">
                     <Label className="text-left">
                       Payment{" "}
-                      {(banksQ?.data?.data?.length ?? 0) > 1
-                        ? "Options"
-                        : "Details"}
+                      {(banksQ?.data?.length ?? 0) > 1 ? "Options" : "Details"}
                     </Label>
                     {banksQ?.isLoading && (
                       <div className="flex flex-row gap-2 items-center">
@@ -1408,20 +1355,18 @@ export const PaymentTopupForm = ({
                         Fetching Payment Options...
                       </div>
                     )}
-                    {banksQ?.data?.data?.length &&
-                      banksQ.data.data?.map((item: BankType, index: number) => (
+                    {banksQ?.data?.length &&
+                      banksQ.data?.map((item: BankType, index: number) => (
                         <div
                           key={`bank-${index}`}
-                          className="flex flex-row gap-8 items-center"
-                        >
-                          {(banksQ?.data?.data?.length ?? 0) > 1 && (
+                          className="flex flex-row gap-8 items-center">
+                          {(banksQ?.data?.length ?? 0) > 1 && (
                             <RadioGroupItem value={item.id} id={item.id} />
                           )}
-                          <div className="flex flex-col gap-4 bg-gray-300/10 p-2 rounded-md border-1 border-gray-500 w-full">
+                          <div className="flex flex-col gap-4 bg-gray-300/10 p-2 rounded-md border border-gray-500 w-full">
                             <div className="flex flex-col gap-2 min-w-32">
                               <p
-                                className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                              >
+                                className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}>
                                 Bank Name
                               </p>
                               <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
@@ -1430,8 +1375,7 @@ export const PaymentTopupForm = ({
                             </div>
                             <div className="flex flex-col gap-2 min-w-32">
                               <p
-                                className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                              >
+                                className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}>
                                 Account No.
                               </p>
                               <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
@@ -1447,12 +1391,11 @@ export const PaymentTopupForm = ({
                                     onClick={() =>
                                       copyToClipboard(
                                         item.acctNo,
-                                        handleCopySuccess
+                                        handleCopySuccess,
                                       )
                                     }
                                     size="sm"
-                                    className="px-3"
-                                  >
+                                    className="px-3">
                                     <span className="sr-only">{copyText}</span>
                                     <CopyIcon />
                                     {copyText}
@@ -1462,8 +1405,7 @@ export const PaymentTopupForm = ({
                             </div>
                             <div className="flex flex-col gap-2 min-w-32">
                               <p
-                                className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}
-                              >
+                                className={`text-sm text-gray-600 dark:text-gray-400 capitalize`}>
                                 Account Name
                               </p>
                               <div className="text-black dark:text-white text-base font-bold whitespace-pre-wrap capitalize">
@@ -1484,8 +1426,7 @@ export const PaymentTopupForm = ({
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 100 }}
-                className={`flex flex-col gap-4`}
-              >
+                className={`flex flex-col gap-4`}>
                 {payment && (
                   <>
                     <Label>Kindly Upload Proof of Payment</Label>
@@ -1513,8 +1454,7 @@ export const PaymentTopupForm = ({
               <Button
                 type="submit"
                 onClick={onSubmit}
-                disabled={updateMutation.isPending || amount < 500}
-              >
+                disabled={updateMutation.isPending || amount < 500}>
                 {updateMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

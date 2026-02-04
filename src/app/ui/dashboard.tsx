@@ -72,7 +72,7 @@ export default function Dashboard() {
   const [outreachFilter, setOutreachFilter] = useState("*");
   const [bankFilter, setBankFilter] = useState("*");
   const [selectedPayment, setSelectedPayment] = useState<PaymentType | null>(
-    null
+    null,
   );
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
@@ -91,7 +91,7 @@ export default function Dashboard() {
           statusFilter ?? "*"
         }&outreach=${outreachFilter || "*"}&bank=${bankFilter || "*"}&gender=${
           genderFilter || "*"
-        }`
+        }`,
       );
       return response.json();
     },
@@ -113,7 +113,7 @@ export default function Dashboard() {
       const res = await fetch(
         `/api/v1/payments/stats?q=${searchQuery || "*"}&outreach=${
           outreachFilter || "*"
-        }`
+        }`,
       );
       return res.json();
     },
@@ -145,7 +145,7 @@ export default function Dashboard() {
 
   const handleDelete = (id: string) => {
     const confirm = window.confirm(
-      `Are you sure you want to delete this record?`
+      `Are you sure you want to delete this record?`,
     );
     if (!confirm) return;
     deleteMutation.mutate(id);
@@ -171,16 +171,14 @@ export default function Dashboard() {
               asChild
               variant="outline"
               size="lg"
-              className="mr-2 disabled:bg-gray-800"
-            >
+              className="mr-2 disabled:bg-gray-800">
               <a
                 href={`/api/v1/payments/excel?q=${searchQuery || "*"}&status=${
                   statusFilter ?? "*"
                 }&outreach=${outreachFilter || "*"}&gender=${
                   genderFilter || "*"
                 }`}
-                download={"outreach-payments.xlsx"}
-              >
+                download={"outreach-payments.xlsx"}>
                 <Download className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">Export</span>
               </a>
@@ -189,8 +187,7 @@ export default function Dashboard() {
           <Button
             size="lg"
             onClick={openCreateDialog}
-            className="cursor-pointer"
-          >
+            className="cursor-pointer">
             <PlusIcon className="h-4 w-4 sm:mr-2" />
             <span className="hidden sm:inline">New Payment</span>
           </Button>
@@ -275,8 +272,7 @@ export default function Dashboard() {
                     variant={"outline"}
                     size={"icon"}
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-2 top-1 rounded-full w-7 h-7"
-                  >
+                    className="absolute right-2 top-1 rounded-full w-7 h-7">
                     <XIcon className="w-5 h-5" />
                   </Button>
                 )}
@@ -285,8 +281,7 @@ export default function Dashboard() {
               <div className="grid grid-cols-4 items-center gap-4">
                 <Select
                   value={genderFilter}
-                  onValueChange={(value) => setGenderFilter(value)}
-                >
+                  onValueChange={(value) => setGenderFilter(value)}>
                   <SelectTrigger className="col-span-3">
                     <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
@@ -310,8 +305,7 @@ export default function Dashboard() {
                     <SelectItem
                       className="capitalize"
                       key={status}
-                      value={status}
-                    >
+                      value={status}>
                       {status.toLowerCase().replace("_", " ")}
                     </SelectItem>
                   ))}
@@ -330,7 +324,7 @@ export default function Dashboard() {
                       <SelectItem key={index} value={item.id}>
                         {item.theme}
                       </SelectItem>
-                    )
+                    ),
                   )}
                 </SelectContent>
               </Select>
@@ -342,7 +336,7 @@ export default function Dashboard() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="*">All Banks</SelectItem>
-                  {banksQ?.data?.data?.map((item: BankType, index: number) => (
+                  {banksQ?.data?.map((item: BankType, index: number) => (
                     <SelectItem key={index} value={item.id}>
                       {item.name} - {item.bank}
                     </SelectItem>
@@ -390,8 +384,7 @@ export default function Dashboard() {
                     <TableRow>
                       <TableCell
                         colSpan={6}
-                        className="text-center py-8 text-gray-500 dark:text-gray-400"
-                      >
+                        className="text-center py-8 text-gray-500 dark:text-gray-400">
                         No payments found. Try adjusting your filters.
                       </TableCell>
                     </TableRow>
@@ -438,16 +431,14 @@ export default function Dashboard() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => openUpdateDialog(payment)}
-                          >
+                            onClick={() => openUpdateDialog(payment)}>
                             <Pencil className="h-4 w-4" />
                             <span className="sr-only">Edit</span>
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleDelete(payment.id)}
-                          >
+                            onClick={() => handleDelete(payment.id)}>
                             <Trash2 className="h-4 w-4 text-red-500" />
                             <span className="sr-only">Delete</span>
                           </Button>

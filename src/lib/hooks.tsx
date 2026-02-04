@@ -9,9 +9,9 @@ export const useBanks = () =>
     queryKey: ["banks"],
     queryFn: async () => {
       const { data } = await axios.get<{ data: BankType[] }>(
-        `/api/v1/banks?isPublic=true`
+        `/api/v1/banks?isPublic=true`,
       );
-      return data;
+      return data?.data;
     },
   });
 
@@ -20,7 +20,7 @@ export const useOutreachList = () =>
     queryKey: ["outreach"],
     queryFn: async () => {
       const { data } = await axios.get<{ data: OutreachType[] }>(
-        `/api/v1/outreach`
+        `/api/v1/outreach`,
       );
       return data;
     },
