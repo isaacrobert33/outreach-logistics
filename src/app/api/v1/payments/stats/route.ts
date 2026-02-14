@@ -38,7 +38,8 @@ export const GET = async (req: NextRequest) => {
   });
 
   const totalPaidAmount = await prisma.payment.aggregate({
-    _sum: { paidAmount: true, ...filters },
+     where: filters,
+    _sum: { paidAmount: true, },
   });
 
   return Response({
