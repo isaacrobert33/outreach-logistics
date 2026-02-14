@@ -109,7 +109,7 @@ export default function Dashboard() {
   const banksQ = useBanks();
 
   const statsQuery = useQuery({
-    queryKey: ["stats"],
+    queryKey: ["stats", outreachFilter, searchQuery],
     queryFn: async () => {
       const res = await fetch(
         `/api/v1/payments/stats?q=${searchQuery || "*"}&outreach=${
