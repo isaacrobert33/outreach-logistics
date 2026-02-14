@@ -164,7 +164,7 @@ export default function Outreachs() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleDelete(outreach.id)}>
+                            onClick={() => handleDelete(outreach.id)} disabled>
                             <Trash2 className="h-4 w-4 text-red-500" />
                             <span className="sr-only">Delete</span>
                           </Button>
