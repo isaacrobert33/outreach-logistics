@@ -89,18 +89,18 @@ export const POST = async (req: NextRequest) => {
 
   const validatedBody = PaymentSchema.parse(body) as any;
 
-  const validateUniqueness = await prisma.payment.count({
-    where: {
-      OR: [{ email: validatedBody.email }, { phone: validatedBody.phone }],
-    },
-  });
+  // const validateUniqueness = await prisma.payment.count({
+  //   where: {
+  //     OR: [{ email: validatedBody.email }, { phone: validatedBody.phone }],
+  //   },
+  // });
 
-  if (validateUniqueness) {
-    return Response({
-      status: 400,
-      message: "Email or Phone number already exists.",
-    });
-  }
+  // if (validateUniqueness) {
+  //   return Response({
+  //     status: 400,
+  //     message: "Email or Phone number already exists.",
+  //   });
+  // }
 
   const paymentId = await generateNextId(
     validatedBody.outreachId,
