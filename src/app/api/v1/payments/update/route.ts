@@ -4,6 +4,20 @@ import { Response } from "@/lib/utils";
 import { PaymentSchema } from "@/lib/schema";
 import { PaymentStatus } from "@prisma/client";
 
+
+
+async function generateNextId(outreachId?: string, crew?: string) {
+  // Get the last created record by ID (assuming sequential creation)
+  const existingCount = await prisma.payment.count({
+    where: { crew: crew ?? "nocrew", outreachId },
+  });
+  
+  const prefix = (crew ?? "nocrew").slice(0, 3).toUpperCase();
+  const nextNumber = String(existingCount + 1).padStart(3, "0");
+  return `${prefix}/${nextNumber}`;
+}
+
+
 export async function PATCH(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
@@ -26,6 +40,11 @@ export async function PATCH(req: NextRequest) {
     validatedData.pendingAmount =
       (payment.pendingAmount ?? 0) + validatedData.pendingAmount;
     validatedData.paymentStatus = PaymentStatus.PENDING;
+  }
+
+  if (validatedData.crew && validatedData.crew !== payment.crew) {
+    const newId = await generateNextId(payment.outreachId as any, validatedData.crew);
+    validatedData["id"] = newId;
   }
 
   try {
