@@ -66,22 +66,13 @@ export const GET = async (req: NextRequest) => {
 
 async function generateNextId(outreachId?: string, crew?: string) {
   // Get the last created record by ID (assuming sequential creation)
-  const lastRecord = await prisma.payment.findFirst({
+  const existingCount = await prisma.payment.count({
     where: { crew: crew ?? "nocrew", outreachId },
-    orderBy: { createdAt: "desc" },
   });
-
-  let newId;
-  if (lastRecord && lastRecord.id) {
-    const [prefix, numPart] = lastRecord.id.split("/");
-    const nextNumber = String(parseInt(numPart, 10) + 1).padStart(3, "0");
-    newId = `${prefix}/${nextNumber}`;
-  } else {
-    // If no record exists yet
-    newId = `${(crew ?? "nocrew").slice(0, 3).toUpperCase()}/001`;
-  }
-
-  return newId;
+  
+  const prefix = (crew ?? "nocrew").slice(0, 3).toUpperCase();
+  const nextNumber = String(existingCount + 1).padStart(3, "0");
+  return `${prefix}/${nextNumber}`;
 }
 
 export const POST = async (req: NextRequest) => {
