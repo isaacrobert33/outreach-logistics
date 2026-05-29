@@ -64,22 +64,40 @@ export const GET = async (req: NextRequest) => {
 //   return idExists ? `${crew.slice(0, 3).toUpperCase()}/${formatNumber(paymentCount + 2)}`: id;
 // };
 
-async function generateNextId(outreachId?: string, crew?: string) {
-  // Get the last created record by ID (assuming sequential creation)
-  const existingCount = await prisma.payment.count({
-    where: { crew: crew ?? "nocrew", outreachId },
-  });
-  
+async function generateNextId(outreachId?: string, crew?: string): Promise<string> {
   const prefix = (crew ?? "nocrew").slice(0, 3).toUpperCase();
-  const nextNumber = String(existingCount + 1).padStart(3, "0");
-  return `${prefix}/${nextNumber}`;
+
+  // Find the record with the highest sequential ID starting with this prefix
+  const lastPayment = await prisma.payment.findFirst({
+    where: {
+      crew: crew ?? "nocrew",
+      outreachId,
+      id: {
+        startsWith: `${prefix}/`,
+      },
+    },
+    orderBy: {
+      id: 'desc', // Pulls the highest string value (e.g., "NOC/010" comes after "NOC/009")
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  let nextNumber = 1;
+
+  if (lastPayment?.id) {
+    // Split "NOC/010" by the slash, grab "010", and convert it to an integer
+    const parts = lastPayment.id.split("/");
+    const lastNumber = parseInt(parts[1], 10);
+    if (!isNaN(lastNumber)) {
+      nextNumber = lastNumber + 1;
+    }
+  }
+
+  // Format the incremented number back into a padded string (e.g., "011")
+  return `${prefix}/${String(nextNumber).padStart(3, "0")}`;
 }
-
-export const POST = async (req: NextRequest) => {
-  const body = await req.json();
-
-  const validatedBody = PaymentSchema.parse(body) as any;
-
   // const validateUniqueness = await prisma.payment.count({
   //   where: {
   //     OR: [{ email: validatedBody.email }, { phone: validatedBody.phone }],
@@ -93,30 +111,54 @@ export const POST = async (req: NextRequest) => {
   //   });
   // }
 
-  const paymentId = await generateNextId(
-    validatedBody.outreachId,
-    validatedBody.crew
-  );
-
+ export const POST = async (req: NextRequest) => {
   try {
-    const payment = await prisma.payment.create({
-      data: {
-        ...validatedBody,
-        id: paymentId,
-        outreachId: validatedBody.outreachId,
-      },
-    });
+    const body = await req.json();
+    const validatedBody = PaymentSchema.parse(body) as any;
 
-    return Response({
-      status: 201,
-      data: payment,
-    });
+    let payment;
+    let attempts = 0;
+    const maxAttempts = 3;
+
+    while (attempts < maxAttempts) {
+      // Generate the ID INSIDE the loop so a retry fetches an updated number
+      const paymentId = await generateNextId(
+        validatedBody.outreachId,
+        validatedBody.crew
+      );
+
+      try {
+        payment = await prisma.payment.create({
+          data: {
+            ...validatedBody,
+            id: paymentId,
+            outreachId: validatedBody.outreachId,
+          },
+        });
+        
+        // Break out of the retry loop if creation succeeds
+        break; 
+      } catch (error: any) {
+        // P2002 is Prisma's error code for Unique Constraint Violation
+        if (error.code === 'P2002' && attempts < maxAttempts - 1) {
+          attempts++;
+          continue; // Concurrency collision occurred; try again with a new ID
+        }
+        throw error; // Re-throw if it's a completely different DB error
+      }
+    }
+
+    return NextResponse.json({ status: 201, data: payment }, { status: 201 });
+
   } catch (error: any) {
-    return Response({
-      status: 400,
-      message: `${error?.message} ${paymentId}`,
-      data: error.errors,
-    });
+    return NextResponse.json(
+      {
+        status: 400,
+        message: error?.message || "An error occurred during execution",
+        data: error.errors || null,
+      },
+      { status: 400 }
+    );
   }
 };
 
