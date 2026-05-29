@@ -102,7 +102,8 @@ export const POST = async (req: NextRequest) => {
     const payment = await prisma.payment.create({
       data: {
         ...validatedBody,
-        id: paymentId,
+        reference: paymentId,
+        // id: paymentId,
         outreachId: validatedBody.outreachId,
       },
     });
