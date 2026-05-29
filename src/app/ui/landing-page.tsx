@@ -124,7 +124,7 @@ export default function LandingPage() {
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
             <div data-aos="fade-right">
               <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
-                Join The Outreach Event
+                Join The Inreach Event
               </h1>
               <p className="mt-4 text-gray-500 dark:text-gray-400 md:text-xl">
                 {outreach?.description}
