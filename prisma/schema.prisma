@@ -61,6 +61,7 @@ model BankDetail {
 
 model Payment {
   id            String        @id @default(cuid())
+  reference     String        @unique
   name          String?
   paymentStatus PaymentStatus @default(PENDING)
   gender        Gender        @default(UNSPECIFIED)
